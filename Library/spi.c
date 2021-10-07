@@ -208,7 +208,7 @@ void SPI_Master_Init (SPI_TypeDef *SPIx)
 uint8_t SPI_SS_Set (GPIO_TypeDef *GPIOx, uint16_t pin)
 {
   // low level
-  GPIOx->BRR |= pin;
+  GPIOx->BRR = pin;
 }
 
 /**
@@ -222,7 +222,7 @@ uint8_t SPI_SS_Set (GPIO_TypeDef *GPIOx, uint16_t pin)
 uint8_t SPI_SS_Res (GPIO_TypeDef *GPIOx, uint16_t pin)
 {
   // high level
-  GPIOx->BSRR |= pin;   
+  GPIOx->BSRR = pin;   
 }
 
 /**
