@@ -13,14 +13,14 @@ Prior defined for microcontroller STM32f103C8T6.
 Library was tested and proved on a ST7735 1.8″ TFT display with STM32f103C8T6.
 
 ### Pinout
-SPI1 alternate function remapping according to [RM0008 Reference manual](https://www.st.com/mwg-internal/de5fs23hu73ds/progress?id=4xg82YtTk42dgC33Uqaa4XQ5B_tXbY3NJjon9Bfhm7k,) (9.3.10, page 181).
+SPI1 alternate function remapping according to [RM0008 Reference manual](https://www.st.com/mwg-internal/de5fs23hu73ds/progress?id=4xg82YtTk42dgC33Uqaa4XQ5B_tXbY3NJjon9Bfhm7k,) (9.3.10, page 181). The GPIO pin configuration is according to (9.1.11, page 167).
 
-| PORT  | SPI1 | SPI1 remap | SPI2 |
-| :---: | :---: | :---: | :---: |
-| SS | PA4 | PA15 | PB12 |
-| SCK | PA5 | PB3 | PB13 |
-| MISO | PA6 | PB4 | PB14 |
-| MOSI | PA7 | PB5 | PB15 |
+| PORT  | SPI1 | SPI1 remap | SPI2 | GPIO Configuration |
+| :---: | :---: | :---: | :---: | :--: |
+| SS | PA4 | PA15 | PB12 | Hardware => Alternate function push-pull / Software => GPIO pin |
+| SCK | PA5 | PB3 | PB13 | Master => Alternate function push-pull |
+| MISO | PA6 | PB4 | PB14 | Full duplex / master => Input floating / Input pull-up |
+| MOSI | PA7 | PB5 | PB15 | Full duplex / master => Alternate function push-pull |
 
 ### Functions
 - [*void* **SPI1_InitPins** *(void)*]() - init SPI1 pins SCK, MISO, MOSI
