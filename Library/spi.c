@@ -1,17 +1,24 @@
-/**
- * SPI Library
- *
- * Copyright (C) 2020 Marian Hrinko.
- * Written by Marian Hrinko (mato.hrinko@gmail.com)
+/** 
+ * --------------------------------------------------------------------------------------------+ 
+ * @name        SPI Library
+ * --------------------------------------------------------------------------------------------+ 
+ *              Copyright (C) 2020 Marian Hrinko.
+ *              Written by Marian Hrinko (mato.hrinko@gmail.com)
  *
  * @author      Marian Hrinko
  * @datum       08.03.2020
+ * @update      08.03.2020
  * @file        spi.c
+ * @version     1.0
  * @tested      stm32f103c6t8
- * @inspiration https://github.com/nalepae/stm32_tutorial/blob/master/src/spi.c
+ *
+ * @depend      font.h
+ * --------------------------------------------------------------------------------------------+
+ * @descr       Version 1.0 -> basic concept for spi communication with st7735 driver
+ * --------------------------------------------------------------------------------------------+
+ * @inspir      https://github.com/nalepae/stm32_tutorial/blob/master/src/spi.c
  *              https://learnbuildshare.wordpress.com/about/stm32/using-spi-as-master/
  *              http://www.handsonembedded.com/stm32f103-spl-tutorial-5/
- * -------------------------------------------------
  */
 
 #include <stm32f10x.h>
@@ -169,7 +176,7 @@ void SPI_Master_Init (SPI_TypeDef *SPIx)
   // SSI:      1
   // LSBFIRST: 0 - MSB transmitted first
   // SPE:      0 - Peripheral disabled
-  // BR[2:0]:  000 - f PCLK/2
+  // BR[2:0]:  100 - f PCLK/32
   // MSTR:     1 - Master configuration
   // CPOL:     0 - 0 when idle
   // CPHA:     0 - The first clock transition is the first data capture edge
