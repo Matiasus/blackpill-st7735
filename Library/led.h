@@ -1,22 +1,23 @@
 /** 
- * ---------------------------------------------------------------+ 
- * @desc        LED
- * ---------------------------------------------------------------+ 
- *              Copyright (C) 2021 Marian Hrinko.
+ * --------------------------------------------------------------------------------------------+ 
+ * @name        LED Library
+ * --------------------------------------------------------------------------------------------+ 
+ *              Copyright (C) 2020 Marian Hrinko.
  *              Written by Marian Hrinko (mato.hrinko@gmail.com)
  *
  * @author      Marian Hrinko
- * @datum       24.03.2021
+ * @datum       08.03.2020
+ * @update      11.10.2020
  * @file        led.h
- * @update      -
  * @version     1.0
- * @tested      stm32f103c8t6
+ * @tested      stm32f103c6t8
  *
  * @depend      
- * ---------------------------------------------------------------+
- * @interface   
- * @pins         
- *
+ * --------------------------------------------------------------------------------------------+
+ * @descr       LED flashing control of Blackpill's led connected to PB12
+ * @note        Before calling function DelayMs() must be called function DelayInit()
+ * --------------------------------------------------------------------------------------------+
+ * @inspir      
  */
 
 #ifndef LED_H

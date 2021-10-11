@@ -1,20 +1,25 @@
 /** 
  * --------------------------------------------------------------------------------------------+ 
- * @desc        LED example
+ * @name        LED Library
  * --------------------------------------------------------------------------------------------+ 
- *              Copyright (C) 2021
- *              Basic written by Geoffrey Brown
- *              Modified by Marian Hrinko (mato.hrinko@gmail.com)
+ *              Copyright (C) 2020 Marian Hrinko.
+ *              Written by Marian Hrinko (mato.hrinko@gmail.com)
  *
- * @author      Geoffrey Brown / Marian Hrinko
- * @datum       23.03.2021
+ * @author      Marian Hrinko
+ * @datum       08.03.2020
+ * @update      11.10.2020
  * @file        led.c
- * @tested      stm32f103c8t6
+ * @version     1.0
+ * @tested      stm32f103c6t8
  *
- * @depend      
+ * @depend      led.h, libdelay.h
  * --------------------------------------------------------------------------------------------+
- * @origin           
+ * @descr       LED flashing control of Blackpill's led connected to PB12
+ * @note        Before calling function DelayMs() must be called function DelayInit()
+ * --------------------------------------------------------------------------------------------+
+ * @inspir      
  */
+ 
 #include <stm32f10x.h>
 #include "libdelay.h"
 #include "led.h"
@@ -81,9 +86,9 @@ void LedOff (void)
 }
 
 /**
- * @desc    Led off
+ * @desc    Led blink
  *
- * @param   uint8_t
+ * @param   uint8_t number of loops
  *
  * @return  void
  */

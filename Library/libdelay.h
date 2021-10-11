@@ -1,19 +1,21 @@
 /** 
  * --------------------------------------------------------------------------------------------+ 
- * @desc        Lib delay
+ * @desc        Delay library
  * --------------------------------------------------------------------------------------------+ 
  *              Copyright (C) 2020 Marian Hrinko.
  *              Written by Marian Hrinko (mato.hrinko@gmail.com)
  *
  * @author      Marian Hrinko
  * @datum       06.04.2021
- * @file        libdelay.h
+ * @update      11.10.2020
+ * @file        libdelay.c
  * @version     1.0
- * @tested      stm32f103c8t6
+ * @tested      stm32f103c6t8
  *
  * @depend      
  * --------------------------------------------------------------------------------------------+
- * @descr       delays' functions using SysTick
+ * @descr       Delay library using SysTick
+ * @note        Before calling function DelayMs() must be called function DelayInit()
  * --------------------------------------------------------------------------------------------+
  * @inspir      
  */
