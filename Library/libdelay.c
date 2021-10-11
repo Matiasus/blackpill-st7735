@@ -17,7 +17,7 @@
  
 // libraries
 #include <stm32f10x.h>
-#include "../Library/libdelay.h"
+#include "libdelay.h"
 
 // delay
 volatile uint32_t delayTime;
@@ -36,14 +36,45 @@ void SysTick_Handler (void)
 }
 
 /**
+ * @desc    Delay init
+ *
+ * @param   void
+ *
+ * @return  ErrorStatus defined in stm32f10x.h
+ */
+ErrorStatus DelayInit (void)
+{
+  // variables
+  // -------------------------------------------------------
+  ErrorStatus returnCode;
+
+  // delay
+  // -------------------------------------------------------
+  // set how many periods need to be between 2 interrupts
+  returnCode = SysTick_Config (SystemCoreClock / 1000);
+  // enable interrupts
+  __enable_irq ();
+  // success
+  if (returnCode != SUCCESS) {
+    // error Handling
+    return ERROR;
+  }
+  
+  // success
+  return SUCCESS;
+}
+
+/**
  * @desc    Delay ms function
  *
  * @param   uint32_t
  *
  * @return  void
  */
-void delayMs (uint32_t cycles)
+void DelayMs (uint32_t cycles)
 {
+  // set cycles
   delayTime = cycles;
+  // loop
   while (delayTime != 0);
 }

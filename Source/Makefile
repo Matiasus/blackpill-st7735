@@ -8,7 +8,7 @@ ASFLAGS = -g
 # object files
 
 OBJS =  $(STARTUP) main.o
-OBJS += spi.o st7735.o font.o libdelay.o led.o
+OBJS += spi.o libdelay.o led.o
 
 # include common make file
 

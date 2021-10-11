@@ -26,7 +26,7 @@
  *
  * @return  void
  */
-void ledGpioInit (void)
+void LedGpioInit (void)
 {
   // enable clock for corresponding GPIO
   RCC->APB2ENR |= RCC_APB2ENR_IOPBEN;
@@ -61,7 +61,7 @@ void ledGpioInit (void)
  *
  * @return  void
  */
-void ledOn (void)
+void LedOn (void)
 {
   // led ON
   GPIOB->BRR |= PIN12;
@@ -74,7 +74,7 @@ void ledOn (void)
  *
  * @return  void
  */
-void ledOff (void)
+void LedOff (void)
 {
   // led off
   GPIOB->BSRR |= PIN12;
@@ -87,17 +87,17 @@ void ledOff (void)
  *
  * @return  void
  */
-void ledBlink (uint8_t loops)
+void LedBlink (uint8_t loops)
 {
   // loops
   while (loops--) {
     // led on
-    ledOn ();
+    LedOn ();
     // delay
-    delayMs (LOOPS);
+    DelayMs (LOOPS);
     // led off
-    ledOff ();
+    LedOff ();
     // delay
-    delayMs (LOOPS);
+    DelayMs (LOOPS);
   }
 }

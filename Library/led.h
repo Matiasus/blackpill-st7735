@@ -32,7 +32,7 @@
    *
    * @return  void
    */
-  void ledGpioInit (void);
+  void LedGpioInit (void);
 
   /**
    * @desc    Led on
@@ -41,7 +41,7 @@
    *
    * @return  void
    */
-  void ledOn (void);
+  void LedOn (void);
 
   /**
    * @desc    Led off
@@ -50,15 +50,15 @@
    *
    * @return  void
    */
-  void ledOff (void);
+  void LedOff (void);
 
   /**
-   * @desc    Led off
+   * @desc    Led blink
    *
    * @param   uint8_t
    *
    * @return  void
    */
-  void ledBlink (uint8_t);
+  void LedBlink (uint8_t);
 
 #endif

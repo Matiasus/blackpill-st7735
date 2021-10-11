@@ -16,41 +16,56 @@
 // libraries
 #include <stm32f10x.h>
 #include "../Library/led.h"
-#include "../Library/st7735.h"
+#include "../Library/spi.h"
 #include "../Library/libdelay.h"
 
 /**
  * @desc    Main
  *
  * @param   void
+ *
  * @return  void
  */
 int main (void)
 {
-  // variables
-  // -------------------------------------------------------
-  uint32_t returnCode;
-  uint32_t t = 2000;
+  uint8_t n = 5, i = 0;
+  // txbuffer
+  uint8_t txbuffer[5] = {1, 2, 3, 4, 5};
+  // rxbuffer
+  uint8_t rxbuffer[n];
 
-  // delay
-  // -------------------------------------------------------
-  // set how many periods need to be between 2 interrupts
-  returnCode = SysTick_Config (SystemCoreClock / 1000);
-  // enable interrupts
-  __enable_irq ();
-  // success
-  if (returnCode != 0) {
-    // error Handling
-    return 1;
+  // DELAY
+  // ------------------------------------------------------- 
+  DelayInit ();
+
+  // LED
+  // ------------------------------------------------------- 
+  LedGpioInit ();
+  
+  // SPI
+  // -------------------------------------------------------   
+  SPI_Master_Init (SPI1);
+  
+  while (i < n) {
+    // send 
+    SPI_TRX_8b (SPI1, txbuffer, rxbuffer, (uint16_t) n);
+    // led blink
+    LedBlink (rxbuffer[i++]);
+    // delay
+    DelayMs (1000);
   }
+  
+  // led blink
+  // ------------------------------------------------------- 
+  //LedBlink (5);
 
   // st7735
   // -------------------------------------------------------
-  ST7735_Init (SPI1);
+//  ST7735_Init (SPI1);
 
   // return
   // -------------------------------------------------------
-  return 0; 
+  return SUCCESS; 
 }
  
 #ifdef USE_FULL_ASSERT

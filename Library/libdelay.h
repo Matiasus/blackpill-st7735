@@ -26,6 +26,15 @@
    * @return  void
    */
   void SysTick_Handler (void);
+  
+  /**
+   * @desc    Delay init
+   *
+   * @param   void
+   *
+   * @return  ErrorStatus defined in stm32f10x.h
+   */
+  ErrorStatus DelayInit (void);
 
   /**
    * @desc    Delay ms function
@@ -34,6 +43,6 @@
    *
    * @return  void
    */
-  void delayMs (uint32_t);
+  void DelayMs (uint32_t);
 
 #endif
