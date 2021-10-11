@@ -12,13 +12,11 @@
  * @version     1.0
  * @tested      stm32f103c6t8
  *
- * @depend      spi.h
+ * @depend      
  * --------------------------------------------------------------------------------------------+
- * @descr       Version 1.0 -> basic concept for spi communication with st7735 driver
+ * @descr       
  * --------------------------------------------------------------------------------------------+
- * @inspir      https://github.com/nalepae/stm32_tutorial/blob/master/src/spi.c
- *              https://learnbuildshare.wordpress.com/about/stm32/using-spi-as-master/
- *              http://www.handsonembedded.com/stm32f103-spl-tutorial-5/
+ * @inspir      
  */
 
 #ifndef __SPI_H__

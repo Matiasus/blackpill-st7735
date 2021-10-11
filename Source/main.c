@@ -1,16 +1,24 @@
-/**
- * SPI example
- *
- * Copyright (C) 2020 Marian Hrinko.
- * Written by Marian Hrinko (mato.hrinko@gmail.com)
+/** 
+ * --------------------------------------------------------------------------------------------+ 
+ * @name        MAIN - testing if SPI works
+ * --------------------------------------------------------------------------------------------+ 
+ *              Copyright (C) 2020 Marian Hrinko.
+ *              Written by Marian Hrinko (mato.hrinko@gmail.com)
  *
  * @author      Marian Hrinko
  * @datum       08.03.2020
+ * @update      11.10.2020
  * @file        main.c
- * @tested      stm32f103c8t6
- * @descript    Example spi communication for stm32f103c8t6
- * @usage       Education
- * --------------------------------------------------------
+ * @version     1.0
+ * @tested      stm32f103c6t8
+ *
+ * @depend      spi.h, led.h, libdelay.h
+ * --------------------------------------------------------------------------------------------+
+ * @descr       
+ * --------------------------------------------------------------------------------------------+
+ * @inspir      https://github.com/nalepae/stm32_tutorial/blob/master/src/spi.c
+ *              https://learnbuildshare.wordpress.com/about/stm32/using-spi-as-master/
+ *              http://www.handsonembedded.com/stm32f103-spl-tutorial-5/
  */
  
 // libraries
