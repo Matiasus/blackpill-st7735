@@ -8,9 +8,12 @@
  * @author      Marian Hrinko
  * @datum       06.04.2021
  * @file        libdelay.h
+ * @version     1.0
  * @tested      stm32f103c8t6
  *
  * @depend      
+ * --------------------------------------------------------------------------------------------+
+ * @descr       delays' functions using SysTick
  * --------------------------------------------------------------------------------------------+
  * @inspir      
  */
@@ -35,6 +38,15 @@
    * @return  ErrorStatus defined in stm32f10x.h
    */
   ErrorStatus DelayInit (void);
+
+  /**
+   * @desc    Delay us function
+   *
+   * @param   uint32_t
+   *
+   * @return  void
+   */
+  void delayUs (uint32_t);
 
   /**
    * @desc    Delay ms function

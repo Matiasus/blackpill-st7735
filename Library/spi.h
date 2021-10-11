@@ -1,17 +1,24 @@
-/**
- * SPI Library
- *
- * Copyright (C) 2020 Marian Hrinko.
- * Written by Marian Hrinko (mato.hrinko@gmail.com)
+/** 
+ * --------------------------------------------------------------------------------------------+ 
+ * @name        SPI Library
+ * --------------------------------------------------------------------------------------------+ 
+ *              Copyright (C) 2020 Marian Hrinko.
+ *              Written by Marian Hrinko (mato.hrinko@gmail.com)
  *
  * @author      Marian Hrinko
  * @datum       08.03.2020
+ * @update      11.10.2020
  * @file        spi.h
+ * @version     1.0
  * @tested      stm32f103c6t8
- * @inspiration https://github.com/nalepae/stm32_tutorial/blob/master/src/spi.c
+ *
+ * @depend      spi.h
+ * --------------------------------------------------------------------------------------------+
+ * @descr       Version 1.0 -> basic concept for spi communication with st7735 driver
+ * --------------------------------------------------------------------------------------------+
+ * @inspir      https://github.com/nalepae/stm32_tutorial/blob/master/src/spi.c
  *              https://learnbuildshare.wordpress.com/about/stm32/using-spi-as-master/
  *              http://www.handsonembedded.com/stm32f103-spl-tutorial-5/
- * -------------------------------------------------
  */
 
 #ifndef __SPI_H__
