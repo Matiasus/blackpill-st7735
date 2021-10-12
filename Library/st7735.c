@@ -1,21 +1,27 @@
 /** 
  * --------------------------------------------------------------------------------------------+ 
- * @desc        ST773 1.8" LCD Driver
+ * @name        LCD Library
  * --------------------------------------------------------------------------------------------+ 
  *              Copyright (C) 2020 Marian Hrinko.
  *              Written by Marian Hrinko (mato.hrinko@gmail.com)
  *
  * @author      Marian Hrinko
- * @datum       26.05.2021
+ * @datum       08.03.2020
+ * @update      11.10.2020
  * @file        st7735.c
- * @tested      stm32f103c8t6
+ * @version     1.0
+ * @tested      stm32f103c6t8
  *
- * @depend      font.h
+ * @depend      led.h, libdelay.h
+ * --------------------------------------------------------------------------------------------+
+ * @descr       C library for driving LCD 1.8" with st7735 driver
+ * @note        Before calling function DelayMs() must be called function DelayInit()
  * --------------------------------------------------------------------------------------------+
  * @inspir      http://www.displayfuture.com/Display/datasheet/controller/ST7735.pdf
  *              https://github.com/adafruit/Adafruit-ST7735-Library
  *              http://w8bh.net/avr/AvrTFT.pdf
  */
+
 #include <stm32f10x.h>
 #include "led.h"
 #include "spi.h"
@@ -93,13 +99,13 @@ void ST7735_Pins_Init (GPIO_TypeDef *GPIOx)
   // ----------------------------
   if (GPIOx == GPIOA) {
     // enable clock for corresponding GPIOA
-    RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
+    SET_BIT (RCC->APB2ENR, RCC_APB2ENR_IOPAEN);
     
   // GPIOB
   // ----------------------------    
   } else if (GPIOx == GPIOB) {
     // enable clock for corresponding GPIOB
-    RCC->APB2ENR |= RCC_APB2ENR_IOPBEN;
+    SET_BIT (RCC->APB2ENR, RCC_APB2ENR_IOPBEN);
   }
  
   // ----------------------------
@@ -144,7 +150,7 @@ void ST7735_Pins_Init (GPIO_TypeDef *GPIOx)
 void ST7735_Pin_Set (GPIO_TypeDef *GPIOx, uint16_t pin)
 {
   // pin high level
-  GPIOx->BSRR |= pin;
+  SET_BIT (GPIOx->BSRR, pin);
 }
 
 /**
@@ -158,7 +164,7 @@ void ST7735_Pin_Set (GPIO_TypeDef *GPIOx, uint16_t pin)
 void ST7735_Pin_Res (GPIO_TypeDef *GPIOx, uint16_t pin)
 {
   // pin low level
-  GPIOx->BRR |= pin;
+  SET_BIT (GPIOx->BRR, pin);
 }
 
 /**
@@ -180,11 +186,11 @@ void ST7735_Reset (void)
   // set HW high
   ST7735_Pin_Set (GPIOA, ST7735_RES);
   // delay 200 ms
-  delayMs (200);
+  DelayMs (200);
   // set HW low
   ST7735_Pin_Res (GPIOA, ST7735_RES);
   // delay 200 ms
-  delayMs (200);
+  DelayMs (200);
   // set HW high
   ST7735_Pin_Set (GPIOA, ST7735_RES);
 }
@@ -198,8 +204,6 @@ void ST7735_Reset (void)
  */
 void ST7735_Spi_Init (SPI_TypeDef *SPIx)
 {
-  // init SPI Pins
-  SPI_Pins_Init (SPIx);
   // init SPI Master
   SPI_Master_Init (SPIx);
 }
@@ -213,6 +217,8 @@ void ST7735_Spi_Init (SPI_TypeDef *SPIx)
  */
 void ST7735_Init (SPI_TypeDef *SPIx)
 {
+  // delay init
+  DelayInit ();
   // init pins
   ST7735_Pins_Init (GPIOA);
   // set backlight ON
@@ -240,7 +246,7 @@ void ST7735_Init_Seq (const uint8_t *initializers)
   uint8_t time;
   uint8_t loop = initializers[i++];
 
-  // loop through whole initializer list
+  // loop through whole initializer's list
   while (loop--) {
     // 1st arg - number of command arguments
     args = initializers[i++];
@@ -256,7 +262,7 @@ void ST7735_Init_Seq (const uint8_t *initializers)
       ST7735_Data8b_Send (initializers[i++]);
     }
     // delay
-    delayMs (time);
+    DelayMs (time);
   }
 }
 
