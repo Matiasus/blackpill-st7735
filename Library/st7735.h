@@ -127,7 +127,7 @@
    *
    * @return  void
    */
-  void ST7735_Pin_Set (GPIO_TypeDef *, uint16_t);
+  void ST7735_Pin_High (GPIO_TypeDef *, uint16_t);
 
   /**
    * @desc    Set pin Low
@@ -137,7 +137,7 @@
    *
    * @return  void
    */
-  void ST7735_Pin_Res (GPIO_TypeDef *, uint16_t);
+  void ST7735_Pin_Low (GPIO_TypeDef *, uint16_t);
   
   /**
    * @desc    Init pins
