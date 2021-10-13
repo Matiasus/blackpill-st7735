@@ -198,7 +198,7 @@ void SPI_Master_Init (SPI_TypeDef *SPIx)
     SPIx->CR2 &= ~SPI_CR2_SSOE;
 
     // high level
-    SPI_SS_Set (SPI_SS_GPIO, SPI_SS_PIN);
+    SPI_SS_High (SPI_SS_GPIO, SPI_SS_PIN);
 
     // enable SPI1
     SPIx->CR1 |= SPI_CR1_SPE;
@@ -213,10 +213,10 @@ void SPI_Master_Init (SPI_TypeDef *SPIx)
  *
  * @return  void
  */
-uint8_t SPI_SS_Set (GPIO_TypeDef *GPIOx, uint16_t pin)
+uint8_t SPI_SS_High (GPIO_TypeDef *GPIOx, uint16_t pin)
 {
   // low level
-  GPIOx->BRR = pin;
+  SET_BIT (GPIOx->BSRR, pin);
 }
 
 /**
@@ -227,10 +227,10 @@ uint8_t SPI_SS_Set (GPIO_TypeDef *GPIOx, uint16_t pin)
  *
  * @return  void
  */
-uint8_t SPI_SS_Res (GPIO_TypeDef *GPIOx, uint16_t pin)
+uint8_t SPI_SS_Low (GPIO_TypeDef *GPIOx, uint16_t pin)
 {
   // high level
-  GPIOx->BSRR = pin;   
+  SET_BIT (GPIOx->BRR, pin);   
 }
 
 /**
@@ -281,10 +281,14 @@ uint16_t SPI_TRX_8b (SPI_TypeDef *SPIx, uint8_t *txbuffer, uint8_t *rxbuffer, ui
   uint16_t i;
   // loop through data array
   for (i = 0; i < number; i++) {
+    // low level
+    SPI_SS_Low (SPI_SS_GPIO, SPI_SS_PIN);
     // send data
     SPI_TX_8b (SPIx, txbuffer[i]);
     // store received data
     rxbuffer[i] = SPI_RX_8b (SPIx);
+    // high level
+    SPI_SS_High (SPI_SS_GPIO, SPI_SS_PIN);    
   }
   // wait for ready to load next data
   while (!(SPIx->SR & SPI_SR_TXE));
@@ -314,7 +318,7 @@ void SPI_Disable (SPI_TypeDef *SPIx)
   // disable SPI1
   SPIx->CR1 &= ~SPI_CR1_SPE;
   // low level
-  SPI_SS_Res (SPI_SS_GPIO, SPI_SS_PIN);
+  SPI_SS_High (SPI_SS_GPIO, SPI_SS_PIN);
 
   // SPI1 disable clock
   if (SPIx == SPI1) {

@@ -180,11 +180,11 @@ void ST7735_Reset (void)
   // set HW high
   ST7735_Pin_Set (GPIOA, ST7735_RES);
   // delay 200 ms
-  delayMs (200);
+  DelayMs (200);
   // set HW low
   ST7735_Pin_Res (GPIOA, ST7735_RES);
   // delay 200 ms
-  delayMs (200);
+  DelayMs (200);
   // set HW high
   ST7735_Pin_Set (GPIOA, ST7735_RES);
 }
@@ -198,8 +198,6 @@ void ST7735_Reset (void)
  */
 void ST7735_Spi_Init (SPI_TypeDef *SPIx)
 {
-  // init SPI Pins
-  SPI_Pins_Init (SPIx);
   // init SPI Master
   SPI_Master_Init (SPIx);
 }
@@ -213,6 +211,8 @@ void ST7735_Spi_Init (SPI_TypeDef *SPIx)
  */
 void ST7735_Init (SPI_TypeDef *SPIx)
 {
+  // init delay
+  DelayInit ();
   // init pins
   ST7735_Pins_Init (GPIOA);
   // set backlight ON
@@ -256,7 +256,7 @@ void ST7735_Init_Seq (const uint8_t *initializers)
       ST7735_Data8b_Send (initializers[i++]);
     }
     // delay
-    delayMs (time);
+    DelayMs (time);
   }
 }
 

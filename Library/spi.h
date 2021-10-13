@@ -86,7 +86,7 @@
    *
    * @return  void
    */
-  uint8_t SPI_SS_Set (GPIO_TypeDef *, uint16_t);
+  uint8_t SPI_SS_High (GPIO_TypeDef *, uint16_t);
 
   /**
    * @desc    Slave deselect 
@@ -96,7 +96,7 @@
    *
    * @return  void
    */
-  uint8_t SPI_SS_Res (GPIO_TypeDef *, uint16_t);
+  uint8_t SPI_SS_Low (GPIO_TypeDef *, uint16_t);
 
   /**
    * @desc    Stop SPI1
