@@ -234,7 +234,7 @@ uint8_t SPI_SS_Low (GPIO_TypeDef *GPIOx, uint16_t pin)
 }
 
 /**
- * @desc    Transmit / recieve 8 bits
+ * @desc    Transmit / receive 8 bits
  *
  * @param   SPI_TypeDef *SPIx
  * @param   unit8_t
@@ -256,7 +256,7 @@ uint8_t SPI_TRX_8b (SPI_TypeDef *SPIx, uint8_t data)
 }
 
 /**
- * @desc    Transmit / recieve 16 bits
+ * @desc    Transmit / receive 16 bits
  *
  * @param   SPI_TypeDef *SPIx
  * @param   unit16_t

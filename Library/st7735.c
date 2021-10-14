@@ -321,9 +321,7 @@ void ST7735_Data16b (uint16_t data)
   // data (active high)
   ST7735_Pin_High (GPIOA, ST7735_DC);
   // transmitting data
-  SPI_TRX_8b (SPI1, (uint8_t) (data>>8));
-  // transmitting data
-  SPI_TRX_8b (SPI1, (uint8_t) (data));
+  SPI_TRX_16b (SPI1, data);
   // chip disable - idle high
   ST7735_Pin_High (GPIOA, ST7735_CS);
 }
