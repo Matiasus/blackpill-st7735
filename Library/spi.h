@@ -47,7 +47,7 @@
   void SPI_Master_Init (SPI_TypeDef *);
   
   /**
-   * @desc    Transmission / receive 8 bits
+   * @desc    Transmit / recieve 8 bits
    *
    * @param   SPI_TypeDef *
    * @param   unit8_t
@@ -55,6 +55,16 @@
    * @return  uint8_t
    */
   uint8_t SPI_TRX_8b (SPI_TypeDef *, uint8_t);
+
+  /**
+   * @desc    Transmit / recieve 16 bits
+   *
+   * @param   SPI_TypeDef *
+   * @param   unit16_t
+   *
+   * @return  uint16_t
+   */
+  uint16_t SPI_TRX_16b (SPI_TypeDef *, uint16_t);
 
   /**
    * @desc    Slave select 

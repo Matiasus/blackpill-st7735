@@ -23,7 +23,6 @@
  */
 
 #include <stm32f10x.h>
-#include "led.h"
 #include "spi.h"
 #include "font.h"
 #include "st7735.h"
@@ -258,11 +257,11 @@ void ST7735_Init_Seq (const uint8_t *initializers)
     cmnd = initializers[i++];
   
     // send command
-    ST7735_Cmd_Send (cmnd);
+    ST7735_Command (cmnd);
     // send arguments
     while (args--) {
       // send argument
-      ST7735_Cmd_Send (initializers[i++]);
+      ST7735_Data8b (initializers[i++]);
     }
     // delay
     DelayMs (time);
@@ -277,7 +276,7 @@ void ST7735_Init_Seq (const uint8_t *initializers)
  *
  * @return  void
  */
-void ST7735_Cmd_Send (uint8_t data)
+void ST7735_Command (uint8_t data)
 {
   // chip enable - active low
   ST7735_Pin_Low (GPIOA, ST7735_CS);
@@ -296,7 +295,7 @@ void ST7735_Cmd_Send (uint8_t data)
  *
  * @return  void
  */
-void ST7735_Data8b_Send (uint8_t data)
+void ST7735_Data8b (uint8_t data)
 {
   // chip enable - active low
   ST7735_Pin_Low (GPIOA, ST7735_CS);
@@ -309,14 +308,322 @@ void ST7735_Data8b_Send (uint8_t data)
 }
 
 /**
- * @desc    Update screen
+ * @desc    16bits data send
+ *
+ * @param   uint16_t
+ *
+ * @return  void
+ */
+void ST7735_Data16b (uint16_t data)
+{
+  // chip enable - active low
+  ST7735_Pin_Low (GPIOA, ST7735_CS);
+  // data (active high)
+  ST7735_Pin_High (GPIOA, ST7735_DC);
+  // transmitting data
+  SPI_TRX_8b (SPI1, (uint8_t) (data>>8));
+  // transmitting data
+  SPI_TRX_8b (SPI1, (uint8_t) (data));
+  // chip disable - idle high
+  ST7735_Pin_High (GPIOA, ST7735_CS);
+}
+
+/**
+ * @desc    Set window
+ *
+ * @param   uint8_t x - start position
+ * @param   uint8_t x - end position
+ * @param   uint8_t y - start position
+ * @param   uint8_t y - end position
+ *
+ * @return  uint8_t
+ */
+uint8_t ST7735_SetWindow (uint8_t x0, uint8_t x1, uint8_t y0, uint8_t y1)
+{
+  // check if coordinates is out of range
+  if ((x0 > x1)     ||
+      (x1 > SIZE_X) ||
+      (y0 > y1)     ||
+      (y1 > SIZE_Y)) { 
+    // out of range
+    return ST7735_ERROR;
+  }  
+  // column address set
+  ST7735_Command (CASET);
+  // send start x position
+  ST7735_Data16b (0x0000 | x0);
+  // send end x position
+  ST7735_Data16b (0x0000 | x1);
+
+  // row address set
+  ST7735_Command (RASET);
+  // send start y position
+  ST7735_Data16b (0x0000 | y0);
+  // send end y position
+  ST7735_Data16b (0x0000 | y1);
+
+  // success
+  return ST7735_SUCCESS;
+}
+
+/**
+ * @desc    Write color pixels
+ *
+ * @param   uint16_t color
+ * @param   uint16_t counter
+ *
+ * @return  void
+ */
+void ST7735_SendColor565 (uint16_t color, uint16_t count)
+{
+  // access to RAM
+  ST7735_Command (RAMWR);
+  // counter
+  while (count--) {
+    // write color
+    ST7735_Data16b (color);
+  }
+}
+
+/**
+ * @desc    Draw pixel
+ *
+ * @param   uint8_t x position / 0 <= cols <= MAX_X-1
+ * @param   uint8_t y position / 0 <= rows <= MAX_Y-1
+ * @param   uint16_t color
+ *
+ * @return  void
+ */
+void ST7735_DrawPixel (uint8_t x, uint8_t y, uint16_t color)
+{
+  // set window
+  ST7735_SetWindow (x, x, y, y);
+  // draw pixel by 565 mode
+  ST7735_SendColor565 (color, 1);
+}
+
+/**
+ * @desc    Clear screen
+ *
+ * @param   uint16_t color
+ *
+ * @return  void
+ */
+void ST7735_ClearScreen (uint16_t color)
+{
+  // set whole window
+  ST7735_SetWindow (0, SIZE_X, 0, SIZE_Y);
+  // draw individual pixels
+  ST7735_SendColor565 (color, CACHE_SIZE_MEM);
+}
+
+/**
+ * @desc    Draw line by Bresenham algoritm
+ * @surce   https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+ *  
+ * @param   uint8_t x start position / 0 <= cols <= MAX_X-1
+ * @param   uint8_t x end position   / 0 <= cols <= MAX_X-1
+ * @param   uint8_t y start position / 0 <= rows <= MAX_Y-1 
+ * @param   uint8_t y end position   / 0 <= rows <= MAX_Y-1
+ * @param   uint16_t color
+ *
+ * @return  char
+ */
+char ST7735_DrawLine (uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2, uint16_t color)
+{
+  // determinant
+  int16_t D;
+  // deltas
+  int16_t delta_x, delta_y;
+  // steps
+  int16_t trace_x = 1, trace_y = 1;
+
+  // delta x
+  delta_x = x2 - x1;
+  // delta y
+  delta_y = y2 - y1;
+
+  // check if x2 > x1
+  if (delta_x < 0) {
+    // negate delta x
+    delta_x = -delta_x;
+    // negate step x
+    trace_x = -trace_x;
+  }
+
+  // check if y2 > y1
+  if (delta_y < 0) {
+    // negate detla y
+    delta_y = -delta_y;
+    // negate step y
+    trace_y = -trace_y;
+  }
+
+  // Bresenham condition for m < 1 (dy < dx)
+  if (delta_y < delta_x) {
+    // calculate determinant
+    D = (delta_y << 1) - delta_x;
+    // draw first pixel
+    ST7735_DrawPixel (x1, y1, color);
+    // check if x1 equal x2
+    while (x1 != x2) {
+      // update x1
+      x1 += trace_x;
+      // check if determinant is positive
+      if (D >= 0) {
+        // update y1
+        y1 += trace_y;
+        // update determinant
+        D -= 2*delta_x;    
+      }
+      // update deteminant
+      D += 2*delta_y;
+      // draw next pixel
+      ST7735_DrawPixel (x1, y1, color);
+    }
+  // for m > 1 (dy > dx)    
+  } else {
+    // calculate determinant
+    D = delta_y - (delta_x << 1);
+    // draw first pixel
+    ST7735_DrawPixel (x1, y1, color);
+    // check if y2 equal y1
+    while (y1 != y2) {
+      // update y1
+      y1 += trace_y;
+      // check if determinant is positive
+      if (D <= 0) {
+        // update y1
+        x1 += trace_x;
+        // update determinant
+        D += 2*delta_y;    
+      }
+      // update deteminant
+      D -= 2*delta_x;
+      // draw next pixel
+      ST7735_DrawPixel (x1, y1, color);
+    }
+  }
+  // success return
+  return ST7735_SUCCESS;
+}
+
+/**
+ * @desc    Fast draw line horizontal
+ *
+ * @param   uint8_t xs - start position
+ * @param   uint8_t xe - end position
+ * @param   uint8_t y - position
+ * @param   uint16_t color
+ *
+ * @return void
+ */
+void ST7735_DrawLineHorizontal (uint8_t xs, uint8_t xe, uint8_t y, uint16_t color)
+{
+  uint8_t temp;
+  // check if start is > as end  
+  if (xs > xe) {
+    // temporary safe
+    temp = xs;
+    // start change for end
+    xe = xs;
+    // end change for start
+    xs = temp;
+  }
+  // set window
+  ST7735_SetWindow (xs, xe, y, y);
+  // draw pixel by 565 mode
+  ST7735_SendColor565 (color, xe - xs);
+}
+
+/**
+ * @desc    Fast draw line vertical
+ *
+ * @param   uint8_t x - position
+ * @param   uint8_t ys - start position
+ * @param   uint8_t ye - end position
+ * @param   uint16_t color
+ *
+ * @return  void
+ */
+void ST7735_DrawLineVertical (uint8_t x, uint8_t ys, uint8_t ye, uint16_t color)
+{
+  uint8_t temp;
+  // check if start is > as end
+  if (ys > ye) {
+    // temporary safe
+    temp = ys;
+    // start change for end
+    ye = ys;
+    // end change for start
+    ys = temp;
+  }
+  // set window
+  ST7735_SetWindow (x, x, ys, ye);
+  // draw pixel by 565 mode
+  ST7735_SendColor565 (color, ye - ys);
+}
+
+/**
+ * @desc    Draw rectangle
+ *
+ * @param   uint8_t x start position
+ * @param   uint8_t x end position
+ * @param   uint8_t y start position
+ * @param   uint8_t y end position
+ * @param   uint16_t color
+ *
+ * @return  void
+ */
+void ST7735_DrawRectangle (uint8_t xs, uint8_t xe, uint8_t ys, uint8_t ye, uint16_t color)
+{
+  uint8_t temp;
+  // check if start is > as end  
+  if (xs > xe) {
+    // temporary safe
+    temp = xe;
+    // start change for end
+    xe = xs;
+    // end change for start
+    xs = temp;
+  }
+  // check if start is > as end
+  if (ys > ye) {
+    // temporary safe
+    temp = ye;
+    // start change for end
+    ye = ys;
+    // end change for start
+    ys = temp;
+  }
+  // set window
+  ST7735_SetWindow (xs, xe, ys, ye);
+  // send color
+  ST7735_SendColor565 (color, (xe-xs+1)*(ye-ys+1));  
+}
+
+/**
+ * @desc    RAM Content Show
  *
  * @param   void
  *
  * @return  void
  */
-void ST7735_UpdateScreen (void)
+void ST7735_RAM_Content_Show (void)
 {
-  // display on
-  ST7735_Cmd_Send (DISPON);
+  // display content on
+  ST7735_Command (DISPON);
+}
+
+/**
+ * @desc    RAM Content Hide
+ *
+ * @param   void
+ *
+ * @return  void
+ */
+void ST7735_RAM_Content_Hide (void)
+{
+  // display content off
+  ST7735_Command (DISPOFF);
 }

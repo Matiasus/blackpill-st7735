@@ -30,6 +30,20 @@
   #define ST7735_BL             GPIO_BSRR_BS3
   #define ST7735_CS             GPIO_BSRR_BS4
 
+  // Success / Error
+  // -----------------------------------
+  #ifdef SUCCESS
+    #define ST7735_SUCCESS      SUCCESS
+  #else 
+    #define ST7735_SUCCESS      0
+  #endif
+
+  #ifdef ERROR
+    #define ST7735_ERROR        ERROR
+  #else
+    #define ST7735_ERROR        1
+  #endif
+
   // Command definition
   // -----------------------------------
   #define DELAY                 0x80
@@ -100,7 +114,7 @@
   extern const uint8_t INIT_ST7735B[];
 
   /** @enum Font sizes */
-  typedef enum {
+  enum Size {
     // 1x high & 1x wide size
     X1 = 0x00,
     // 2x high & 1x wide size
@@ -109,7 +123,7 @@
     // 0x0A is set because need to offset 5 position to right
     //      when draw the characters of string 
     X3 = 0x81
-  } ESizes;
+  };
 
   /**
    * @desc    Hardware Reset
@@ -183,7 +197,7 @@
    *
    * @return  void
    */
-  void ST7735_Cmd_Send (uint8_t);
+  void ST7735_Command (uint8_t);
 
   /**
    * @desc    8bits data send
@@ -192,15 +206,126 @@
    *
    * @return  void
    */
-  void ST7735_Data8b_Send (uint8_t);
+  void ST7735_Data8b (uint8_t);
 
   /**
-   * @desc    Update screen
+   * @desc    16bits data send
+   *
+   * @param   uint16_t
+   *
+   * @return  void
+   */
+  void ST7735_Data16b (uint16_t);
+
+  /**
+   * @desc    Set window
+   *
+   * @param   uint8_t x - start position
+   * @param   uint8_t x - end position
+   * @param   uint8_t y - start position
+   * @param   uint8_t y - end position
+   *
+   * @return  uint8_t
+   */
+  uint8_t ST7735_SetWindow (uint8_t, uint8_t, uint8_t, uint8_t);
+
+  /**
+   * @desc    Write color pixels
+   *
+   * @param   uint16_t color
+   * @param   uint16_t counter
+   *
+   * @return  void
+   */
+  void ST7735_SendColor565 (uint16_t, uint16_t);
+
+  /**
+   * @desc    Draw pixel
+   *
+   * @param   uint8_t x position / 0 <= cols <= MAX_X-1
+   * @param   uint8_t y position / 0 <= rows <= MAX_Y-1
+   * @param   uint16_t color
+   *
+   * @return  void
+   */
+  void ST7735_DrawPixel (uint8_t, uint8_t, uint16_t);
+
+  /**
+   * @desc    Clear screen
+   *
+   * @param   uint16_t color
+   *
+   * @return  void
+   */
+  void ST7735_ClearScreen (uint16_t);
+
+  /**
+   * @desc    Draw line by Bresenham algoritm
+   * @surce   https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+   *  
+   * @param   uint8_t x start position / 0 <= cols <= MAX_X-1
+   * @param   uint8_t x end position   / 0 <= cols <= MAX_X-1
+   * @param   uint8_t y start position / 0 <= rows <= MAX_Y-1 
+   * @param   uint8_t y end position   / 0 <= rows <= MAX_Y-1
+   * @param   uint16_t color
+   *
+   * @return  char
+   */
+  char ST7735_DrawLine (uint8_t, uint8_t, uint8_t, uint8_t, uint16_t);
+
+  /**
+   * @desc    Fast draw line horizontal
+   *
+   * @param   uint8_t xs - start position
+   * @param   uint8_t xe - end position
+   * @param   uint8_t y - position
+   * @param   uint16_t color
+   *
+   * @return void
+   */
+  void ST7735_DrawLineHorizontal (uint8_t, uint8_t, uint8_t, uint16_t);
+
+  /**
+   * @desc    Fast draw line vertical
+   *
+   * @param   uint8_t x - position
+   * @param   uint8_t ys - start position
+   * @param   uint8_t ye - end position
+   * @param   uint16_t color
+   *
+   * @return  void
+   */
+  void ST7735_DrawLineVertical (uint8_t, uint8_t, uint8_t, uint16_t);
+
+  /**
+   * @desc    Draw rectangle
+   *
+   * @param   uint8_t x start position
+   * @param   uint8_t x end position
+   * @param   uint8_t y start position
+   * @param   uint8_t y end position
+   * @param   uint16_t color
+   *
+   * @return  void
+   */
+  void ST7735_DrawRectangle (uint8_t, uint8_t, uint8_t, uint8_t, uint16_t);
+
+  /**
+   * @desc    RAM Content Show
    *
    * @param   void
    *
    * @return  void
    */
-  void ST7735_UpdateScreen (void);
+  void ST7735_RAM_Content_Show (void);
+
+  /**
+   * @desc    RAM Content Hide
+   *
+   * @param   void
+   *
+   * @return  void
+   */
+  void ST7735_RAM_Content_Hide (void);
 
 #endif
