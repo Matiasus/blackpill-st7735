@@ -183,7 +183,7 @@ void SPI_Master_Init (SPI_TypeDef *SPIx)
     // SSI:      1
     // LSBFIRST: 0 - MSB transmitted first
     // SPE:      0 - Peripheral disabled
-    // BR[2:0]:  000 - f PCLK/2
+    // BR[2:0]:  010 - f PCLK/8
     // MSTR:     1 - Master configuration
     // CPOL:     0 - 0 when idle
     // CPHA:     0 - The first clock transition is the first data capture edge
@@ -197,11 +197,11 @@ void SPI_Master_Init (SPI_TypeDef *SPIx)
     // pin NSS output disabled
     SPIx->CR2 &= ~SPI_CR2_SSOE;
 
-    // high level
-    SPI_SS_High (SPI_SS_GPIO, SPI_SS_PIN); 
-        
     // enable SPI1
-    SPI1->CR1 |= SPI_CR1_SPE; 
+    SPI1->CR1 |= SPI_CR1_SPE;
+
+    // high level
+    SPI_SS_High (SPI_SS_GPIO, SPI_SS_PIN);    
   }
 }
 
@@ -243,14 +243,14 @@ uint8_t SPI_SS_Low (GPIO_TypeDef *GPIOx, uint16_t pin)
  */
 uint8_t SPI_TRX_8b (SPI_TypeDef *SPIx, uint8_t data)
 {
-  // wait till ready to load next data
-  while (!(SPIx->SR & SPI_SR_TXE));
   // fill SPI11 DATA REGISTER with data
+  // this clear TXE flag
   SPIx->DR = data;
+  // when data loaded parallel into shift register  
+  // TXE flag is set and next data should be loaded 
+  while (!(SPIx->SR & SPI_SR_TXE));
   // wait till data is received
   while (!(SPIx->SR & SPI_SR_RXNE));
-  // wait till ready to load next data
-  while (SPIx->SR & SPI_SR_BSY);
   // return data
   return SPIx->DR;
 }
@@ -264,14 +264,12 @@ uint8_t SPI_TRX_8b (SPI_TypeDef *SPIx, uint8_t data)
  */
 void SPI_Disable (SPI_TypeDef *SPIx)
 {
-/*
+
   // wait till ready to load next data
   while (!(SPIx->SR & SPI_SR_TXE));
-  // wait till data is received
-  while (!(SPIx->SR & SPI_SR_RXNE));
   // check BUSY flag
   while (SPIx->SR & SPI_SR_BSY);
-*/
+
   // disable SPI1
   SPIx->CR1 &= ~SPI_CR1_SPE;
   // low level
