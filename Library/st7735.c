@@ -34,11 +34,11 @@ const uint8_t INIT_ST7735B[] = {
   // number of initializers
   5,
   // ---------------------------------------
-  // Software reset - no arguments,  delay
+  // 0x01 Software reset - no arguments,  delay
   0, 150, SWRESET,
-  // Out of sleep mode, no arguments, delay
+  // 0x11 Out of sleep mode, no arguments, delay
   0, 200, SLPOUT,  
-  // Set color mode, 1 argument delay
+  // 0x3A Set color mode, 1 argument delay
   1,  10, COLMOD, 0x05,
   // D7  D6  D5  D4  D3  D2  D1  D0
   // MY  MX  MV  ML RGB  MH   -   -
@@ -75,8 +75,9 @@ const uint8_t INIT_ST7735B[] = {
   //      0 -> refresh left to right 
   //      1 -> refresh right to left
   // 0xA0 = 1010 0000
+  // 0x36
   1,   0, MADCTL, 0xA0,
-  // Main screen turn on
+  // 0x29 Main screen turn on
   0, 200, DISPON 
   // ---------------------------------------
 };
@@ -135,8 +136,8 @@ void ST7735_Pins_Init (GPIO_TypeDef *GPIOx)
   // MODE[1:0] = 11 // 50 MHz
   // ----------------------------
   // 
-  // speed 50 MHz
-  GPIOx->CRL |= (GPIO_CRL_MODE1 | GPIO_CRL_MODE2 | GPIO_CRL_MODE3);
+  // speed 2 MHz
+  GPIOx->CRL |= (GPIO_CRL_MODE1_1 | GPIO_CRL_MODE2_1 | GPIO_CRL_MODE3_1);
 }
 
 /**
@@ -147,7 +148,7 @@ void ST7735_Pins_Init (GPIO_TypeDef *GPIOx)
  *
  * @return  void
  */
-void ST7735_Pin_Set (GPIO_TypeDef *GPIOx, uint16_t pin)
+void ST7735_Pin_High (GPIO_TypeDef *GPIOx, uint16_t pin)
 {
   // pin high level
   SET_BIT (GPIOx->BSRR, pin);
@@ -161,7 +162,7 @@ void ST7735_Pin_Set (GPIO_TypeDef *GPIOx, uint16_t pin)
  *
  * @return  void
  */
-void ST7735_Pin_Res (GPIO_TypeDef *GPIOx, uint16_t pin)
+void ST7735_Pin_Low (GPIO_TypeDef *GPIOx, uint16_t pin)
 {
   // pin low level
   SET_BIT (GPIOx->BRR, pin);
@@ -184,15 +185,15 @@ void ST7735_Reset (void)
   // |<- 200 ms ->|<- 200 ms ->|
   // -------------------------------
   // set HW high
-  ST7735_Pin_Set (GPIOA, ST7735_RES);
+  ST7735_Pin_High (GPIOA, ST7735_RES);
   // delay 200 ms
   DelayMs (200);
   // set HW low
-  ST7735_Pin_Res (GPIOA, ST7735_RES);
+  ST7735_Pin_Low (GPIOA, ST7735_RES);
   // delay 200 ms
   DelayMs (200);
   // set HW high
-  ST7735_Pin_Set (GPIOA, ST7735_RES);
+  ST7735_Pin_High (GPIOA, ST7735_RES);
 }
 
 /**
@@ -217,12 +218,12 @@ void ST7735_Spi_Init (SPI_TypeDef *SPIx)
  */
 void ST7735_Init (SPI_TypeDef *SPIx)
 {
-  // delay init
-  DelayInit ();
+  // init delay
+  DelayInit (); 
   // init pins
   ST7735_Pins_Init (GPIOA);
   // set backlight ON
-  ST7735_Pin_Set (GPIOA, ST7735_BL);
+  ST7735_Pin_High (GPIOA, ST7735_BL);
   // init spi
   ST7735_Spi_Init (SPIx);
   // hardware reset
@@ -248,22 +249,25 @@ void ST7735_Init_Seq (const uint8_t *initializers)
 
   // loop through whole initializer's list
   while (loop--) {
+
     // 1st arg - number of command arguments
     args = initializers[i++];
     // 2nd arg - delay time
     time = initializers[i++];
     // 3th arg - command
     cmnd = initializers[i++];
+  
     // send command
     ST7735_Cmd_Send (cmnd);
     // send arguments
     while (args--) {
       // send argument
-      ST7735_Data8b_Send (initializers[i++]);
+      ST7735_Cmd_Send (initializers[i++]);
     }
     // delay
     DelayMs (time);
   }
+
 }
 
 /**
@@ -276,13 +280,13 @@ void ST7735_Init_Seq (const uint8_t *initializers)
 void ST7735_Cmd_Send (uint8_t data)
 {
   // chip enable - active low
-  ST7735_Pin_Res (GPIOA, ST7735_CS);
+  ST7735_Pin_Low (GPIOA, ST7735_CS);
   // command (active low)
-  ST7735_Pin_Res (GPIOA, ST7735_DC);
+  ST7735_Pin_Low (GPIOA, ST7735_DC);
   // transmitting data
-  SPI_TX_8b (SPI1, data);
+  SPI_TRX_8b (SPI1, data);
   // chip disable - idle high
-  ST7735_Pin_Set (GPIOA, ST7735_CS);
+  ST7735_Pin_High (GPIOA, ST7735_CS);
 }
 
 /**
@@ -295,13 +299,13 @@ void ST7735_Cmd_Send (uint8_t data)
 void ST7735_Data8b_Send (uint8_t data)
 {
   // chip enable - active low
-  ST7735_Pin_Res (GPIOA, ST7735_CS);
+  ST7735_Pin_Low (GPIOA, ST7735_CS);
   // data (active high)
-  ST7735_Pin_Set (GPIOA, ST7735_DC);
+  ST7735_Pin_High (GPIOA, ST7735_DC);
   // transmitting data
-  SPI_TX_8b (SPI1, data);
+  SPI_TRX_8b (SPI1, data);
   // chip disable - idle high
-  ST7735_Pin_Set (GPIOA, ST7735_CS);
+  ST7735_Pin_High (GPIOA, ST7735_CS);
 }
 
 /**

@@ -47,36 +47,14 @@
   void SPI_Master_Init (SPI_TypeDef *);
   
   /**
-   * @desc    Send 8 bits
+   * @desc    Transmission / receive 8 bits
    *
    * @param   SPI_TypeDef *
    * @param   unit8_t
    *
-   * @return  void
-   */
-  void SPI_TX_8b (SPI_TypeDef *, uint8_t);
-
-  /**
-   * @desc    Receive 8 bits
-   *
-   * @param   SPI_TypeDef *
-   * @param   void
-   *
    * @return  uint8_t
    */
-  uint8_t SPI_RX_8b (SPI_TypeDef *);
-
-  /**
-   * @desc    Transmission / receive array of data
-   *
-   * @param   SPI_TypeDef *
-   * @param   unit8_t *
-   * @param   unit8_t *
-   * @param   unit16_t
-   *
-   * @return  unit16_t
-   */
-  uint16_t SPI_TRX_8b (SPI_TypeDef *, uint8_t *, uint8_t *, uint16_t);
+  uint8_t SPI_TRX_8b (SPI_TypeDef *, uint8_t);
 
   /**
    * @desc    Slave select 
@@ -86,7 +64,7 @@
    *
    * @return  void
    */
-  uint8_t SPI_SS_Set (GPIO_TypeDef *, uint16_t);
+  uint8_t SPI_SS_High (GPIO_TypeDef *, uint16_t);
 
   /**
    * @desc    Slave deselect 
@@ -96,7 +74,7 @@
    *
    * @return  void
    */
-  uint8_t SPI_SS_Res (GPIO_TypeDef *, uint16_t);
+  uint8_t SPI_SS_Low (GPIO_TypeDef *, uint16_t);
 
   /**
    * @desc    Stop SPI1

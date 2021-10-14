@@ -34,7 +34,56 @@
  * @return  void
  */
 int main (void)
-{ 
+{
+/*
+  uint8_t n = 5;
+  // txbuffer
+  uint8_t txbuffer[5] = {1, 2, 3, 4, 5};
+  // rxbuffer
+  uint8_t rxbuffer[n];
+
+  // DELAY
+  // ------------------------------------------------------- 
+  DelayInit ();
+
+  // LED
+  // ------------------------------------------------------- 
+  LedGpioInit ();
+  
+  // SPI
+  // -------------------------------------------------------   
+  SPI_Master_Init (SPI1);
+  
+  while (i < n) {
+    // send 
+    SPI_TRX_8b (SPI1, txbuffer, rxbuffer, (uint16_t) n);
+    // led blink
+    LedBlink (rxbuffer[i++]);
+    // delay
+    DelayMs (1000);
+  }
+  
+  // led blink
+  // ------------------------------------------------------- 
+  //LedBlink (5);
+  
+  // SPI
+  // ------------------------------------------------------- 
+  /// init master operation
+  SPI_Master_Init (SPI1);
+  
+
+  // low level
+  SPI_SS_Low (SPI_SS_GPIO, SPI_SS_PIN);
+  // spi test 
+  SPI_TRX_8b (SPI1, 0x25);
+  // high level
+  SPI_SS_High (SPI_SS_GPIO, SPI_SS_PIN); 
+  
+  // SPI1 disable
+  SPI_Disable (SPI1);
+
+*/
   // st7735
   // -------------------------------------------------------
   ST7735_Init (SPI1);

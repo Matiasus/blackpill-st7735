@@ -63,11 +63,11 @@ void SPI_Pins_Init (SPI_TypeDef *SPIx)
     // MISO - GPIOA.6 - INPUT / PULL UP
     // MOSI - GPIOA.7 - ALTERNATE FUNCTION OUTPUT / PUSH PULL
     GPIOA->CRL |= GPIO_CRL_CNF5_1 | GPIO_CRL_CNF6_1 | GPIO_CRL_CNF7_1;    
-    // SS   - GPIOA.4 - 50 MHz
-    // SCK  - GPIOA.5 - 50 MHz
+    // SS   - GPIOA.4 - 2 MHz
+    // SCK  - GPIOA.5 - 2 MHz
     // MISO - GPIOA.6
-    // MOSI - GPIOA.7 - 50 MHz
-    GPIOA->CRL |= GPIO_CRL_MODE4 | GPIO_CRL_MODE5 | GPIO_CRL_MODE7;
+    // MOSI - GPIOA.7 - 2 MHz
+    GPIOA->CRL |= GPIO_CRL_MODE4_1 | GPIO_CRL_MODE5_1 | GPIO_CRL_MODE7_1;
   // SPI2
   } else if (SPIx == SPI2) {
   
@@ -183,13 +183,13 @@ void SPI_Master_Init (SPI_TypeDef *SPIx)
     // SSI:      1
     // LSBFIRST: 0 - MSB transmitted first
     // SPE:      0 - Peripheral disabled
-    // BR[2:0]:  000 - f PCLK/2
+    // BR[2:0]:  010 - f PCLK/8
     // MSTR:     1 - Master configuration
     // CPOL:     0 - 0 when idle
     // CPHA:     0 - The first clock transition is the first data capture edge
     // ----------------------------------------------------------------------------------
     // set corresponding bits
-    SPIx->CR1 = SPI_CR1_SSM | SPI_CR1_SSI | SPI_CR1_MSTR | SPI_CR1_BR_2;
+    SPIx->CR1 = SPI_CR1_SSM | SPI_CR1_SSI | SPI_CR1_MSTR | SPI_CR1_BR_1;
 
     // Activate the SPI mode (Reset I2SMOD bit in I2SCFGR register)
     SPIx->I2SCFGR &= ~SPI_I2SCFGR_I2SMOD;
@@ -197,11 +197,11 @@ void SPI_Master_Init (SPI_TypeDef *SPIx)
     // pin NSS output disabled
     SPIx->CR2 &= ~SPI_CR2_SSOE;
 
-    // high level
-    SPI_SS_Set (SPI_SS_GPIO, SPI_SS_PIN);
-
     // enable SPI1
-    SPIx->CR1 |= SPI_CR1_SPE;
+    SPI1->CR1 |= SPI_CR1_SPE;
+
+    // high level
+    SPI_SS_High (SPI_SS_GPIO, SPI_SS_PIN);    
   }
 }
 
@@ -213,10 +213,10 @@ void SPI_Master_Init (SPI_TypeDef *SPIx)
  *
  * @return  void
  */
-uint8_t SPI_SS_Set (GPIO_TypeDef *GPIOx, uint16_t pin)
+uint8_t SPI_SS_High (GPIO_TypeDef *GPIOx, uint16_t pin)
 {
   // low level
-  GPIOx->BRR = pin;
+  SET_BIT (GPIOx->BSRR, pin);
 }
 
 /**
@@ -227,10 +227,10 @@ uint8_t SPI_SS_Set (GPIO_TypeDef *GPIOx, uint16_t pin)
  *
  * @return  void
  */
-uint8_t SPI_SS_Res (GPIO_TypeDef *GPIOx, uint16_t pin)
+uint8_t SPI_SS_Low (GPIO_TypeDef *GPIOx, uint16_t pin)
 {
   // high level
-  GPIOx->BSRR = pin;   
+  SET_BIT (GPIOx->BRR, pin);   
 }
 
 /**
@@ -239,59 +239,20 @@ uint8_t SPI_SS_Res (GPIO_TypeDef *GPIOx, uint16_t pin)
  * @param   SPI_TypeDef *SPIx
  * @param   unit8_t
  *
- * @return  void
- */
-void SPI_TX_8b (SPI_TypeDef *SPIx, uint8_t data)
-{
-  // wait till ready to load next data
-  while (!(SPIx->SR & SPI_SR_TXE));
-  // fill SPI11 DATA REGISTER with data
-  SPIx->DR = data;
-  // wait till ready to load next data
-  while (SPIx->SR & SPI_SR_BSY);
-}
-
-/**
- * @desc    Receive 8 bits
- *
- * @param   SPI_TypeDef *SPIx
- *
  * @return  uint8_t
  */
-uint8_t SPI_RX_8b (SPI_TypeDef *SPIx)
+uint8_t SPI_TRX_8b (SPI_TypeDef *SPIx, uint8_t data)
 {
+  // fill SPI11 DATA REGISTER with data
+  // this clear TXE flag
+  SPIx->DR = data;
+  // when data loaded parallel into shift register  
+  // TXE flag is set and next data should be loaded 
+  while (!(SPIx->SR & SPI_SR_TXE));
   // wait till data is received
   while (!(SPIx->SR & SPI_SR_RXNE));
   // return data
   return SPIx->DR;
-}
-
-/**
- * @desc    Transmission / receive array of data
- *
- * @param   SPI_TypeDef *SPIx
- * @param   unit8_t *
- * @param   unit8_t *
- * @param   unit16_t
- *
- * @return  unit16_t
- */
-uint16_t SPI_TRX_8b (SPI_TypeDef *SPIx, uint8_t *txbuffer, uint8_t *rxbuffer, uint16_t number)
-{
-  uint16_t i;
-  // loop through data array
-  for (i = 0; i < number; i++) {
-    // send data
-    SPI_TX_8b (SPIx, txbuffer[i]);
-    // store received data
-    rxbuffer[i] = SPI_RX_8b (SPIx);
-  }
-  // wait for ready to load next data
-  while (!(SPIx->SR & SPI_SR_TXE));
-  // check BUSY flag
-  while (SPIx->SR & SPI_SR_BSY);
-  // return received array of data
-  return i;
 }
 
 /**
@@ -303,18 +264,16 @@ uint16_t SPI_TRX_8b (SPI_TypeDef *SPIx, uint8_t *txbuffer, uint8_t *rxbuffer, ui
  */
 void SPI_Disable (SPI_TypeDef *SPIx)
 {
-/*
+
   // wait till ready to load next data
   while (!(SPIx->SR & SPI_SR_TXE));
-  // wait till data is received
-  while (!(SPIx->SR & SPI_SR_RXNE));
   // check BUSY flag
   while (SPIx->SR & SPI_SR_BSY);
-*/
+
   // disable SPI1
   SPIx->CR1 &= ~SPI_CR1_SPE;
   // low level
-  SPI_SS_Res (SPI_SS_GPIO, SPI_SS_PIN);
+  SPI_SS_High (SPI_SS_GPIO, SPI_SS_PIN);
 
   // SPI1 disable clock
   if (SPIx == SPI1) {
