@@ -21,7 +21,6 @@
  */
  
 // libraries
-#include <stm32f10x.h>
 #include "libdelay.h"
 
 // delay
@@ -47,9 +46,10 @@ void SysTick_Handler (void)
  *
  * @return  ErrorStatus defined in stm32f10x.h
  */
-ErrorStatus DelayInit (void)
+ErrorStatus Delay_Init (void)
 {
-  // variables
+  // variables defined in lib <stm32f10x.h>
+  // typedef enum {ERROR = 0, SUCCESS = !ERROR} ErrorStatus;
   // -------------------------------------------------------
   ErrorStatus returnCode;
 
@@ -64,7 +64,6 @@ ErrorStatus DelayInit (void)
     // error Handling
     return ERROR;
   }
-  
   // success
   return SUCCESS;
 }
@@ -76,7 +75,7 @@ ErrorStatus DelayInit (void)
  *
  * @return  void
  */
-void DelayMs (uint32_t cycles)
+void Delay_Ms (uint32_t cycles)
 {
   // set cycles
   delayTime = cycles;

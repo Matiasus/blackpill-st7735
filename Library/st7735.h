@@ -7,15 +7,15 @@
  *
  * @author      Marian Hrinko
  * @datum       08.03.2020
- * @update      11.10.2020
- * @file        st7735.c
+ * @update      15.10.2020
+ * @file        st7735.h
  * @version     1.0
  * @tested      stm32f103c6t8
  *
- * @depend      led.h, libdelay.h
+ * @depend      spi.h, font.h, st7735.h, libdelay.h
  * --------------------------------------------------------------------------------------------+
- * @descr       C library for driving LCD 1.8" with st7735 driver
- * @note        Before calling function DelayMs() must be called function DelayInit()
+ * @descr       1.0 - C library for driving only one LCD 1.8" with st7735 driver
+ * @note        Before calling function Delay_Ms() must be called function Delay_Init()
  * --------------------------------------------------------------------------------------------+
  * @inspir      http://www.displayfuture.com/Display/datasheet/controller/ST7735.pdf
  *              https://github.com/adafruit/Adafruit-ST7735-Library
@@ -25,6 +25,13 @@
 #ifndef __ST7735_H__
 #define __ST7735_H__
 
+  #include <stm32f10x.h>
+  #include "spi.h"
+  #include "font.h"
+  #include "libdelay.h"
+
+  // PINS
+  // -----------------------------------
   #define ST7735_RES            GPIO_BSRR_BS1
   #define ST7735_DC             GPIO_BSRR_BS2
   #define ST7735_BL             GPIO_BSRR_BS3
@@ -35,13 +42,13 @@
   #ifdef SUCCESS
     #define ST7735_SUCCESS      SUCCESS
   #else 
-    #define ST7735_SUCCESS      0
+    #define ST7735_SUCCESS      1
   #endif
 
   #ifdef ERROR
     #define ST7735_ERROR        ERROR
   #else
-    #define ST7735_ERROR        1
+    #define ST7735_ERROR        0
   #endif
 
   // Command definition

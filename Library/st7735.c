@@ -7,26 +7,23 @@
  *
  * @author      Marian Hrinko
  * @datum       08.03.2020
- * @update      11.10.2020
+ * @update      15.10.2020
  * @file        st7735.c
  * @version     1.0
  * @tested      stm32f103c6t8
  *
- * @depend      led.h, libdelay.h
+ * @depend      spi.h, font.h, st7735.h, libdelay.h
  * --------------------------------------------------------------------------------------------+
- * @descr       C library for driving LCD 1.8" with st7735 driver
- * @note        Before calling function DelayMs() must be called function DelayInit()
+ * @descr       1.0 - C library for driving only one LCD 1.8" with st7735 driver
+ * @note        Before calling function Delay_Ms() must be called function Delay_Init()
  * --------------------------------------------------------------------------------------------+
  * @inspir      http://www.displayfuture.com/Display/datasheet/controller/ST7735.pdf
  *              https://github.com/adafruit/Adafruit-ST7735-Library
  *              http://w8bh.net/avr/AvrTFT.pdf
  */
 
-#include <stm32f10x.h>
-#include "spi.h"
-#include "font.h"
+/** @includes */
 #include "st7735.h"
-#include "libdelay.h"
 
 /** @array Init command */
 const uint8_t INIT_ST7735B[] = {
@@ -186,11 +183,11 @@ void ST7735_Reset (void)
   // set HW high
   ST7735_Pin_High (GPIOA, ST7735_RES);
   // delay 200 ms
-  DelayMs (200);
+  Delay_Ms (200);
   // set HW low
   ST7735_Pin_Low (GPIOA, ST7735_RES);
   // delay 200 ms
-  DelayMs (200);
+  Delay_Ms (200);
   // set HW high
   ST7735_Pin_High (GPIOA, ST7735_RES);
 }
@@ -218,7 +215,7 @@ void ST7735_Spi_Init (SPI_TypeDef *SPIx)
 void ST7735_Init (SPI_TypeDef *SPIx)
 {
   // init delay
-  DelayInit (); 
+  Delay_Init (); 
   // init pins
   ST7735_Pins_Init (GPIOA);
   // set backlight ON
@@ -241,30 +238,28 @@ void ST7735_Init (SPI_TypeDef *SPIx)
 void ST7735_Init_Seq (const uint8_t *initializers)
 {
   uint8_t i = 0;
-  uint8_t args;
-  uint8_t cmnd;
-  uint8_t time;
-  uint8_t loop = initializers[i++];
+  uint8_t command;
+  uint8_t delay_in_ms;
+  uint8_t num_of_arguments;
+  uint8_t num_of_commands = initializers[i++];
 
   // loop through whole initializer's list
-  while (loop--) {
-
+  while (num_of_commands--) {
     // 1st arg - number of command arguments
-    args = initializers[i++];
+    num_of_arguments = initializers[i++];
     // 2nd arg - delay time
-    time = initializers[i++];
+    delay_in_ms = initializers[i++];
     // 3th arg - command
-    cmnd = initializers[i++];
-  
+    command = initializers[i++];
     // send command
-    ST7735_Command (cmnd);
+    ST7735_Command (command);
     // send arguments
-    while (args--) {
+    while (num_of_arguments--) {
       // send argument
       ST7735_Data8b (initializers[i++]);
     }
     // delay
-    DelayMs (time);
+    Delay_Ms (delay_in_ms);
   }
 
 }

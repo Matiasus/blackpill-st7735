@@ -23,6 +23,8 @@
 #ifndef __LIBDELAY_H__
 #define __LIBDELAY_H__
 
+  #include <stm32f10x.h>
+
   /**
    * @desc    SysTick interrupt Handler
    *
@@ -39,16 +41,7 @@
    *
    * @return  ErrorStatus defined in stm32f10x.h
    */
-  ErrorStatus DelayInit (void);
-
-  /**
-   * @desc    Delay us function
-   *
-   * @param   uint32_t
-   *
-   * @return  void
-   */
-  void delayUs (uint32_t);
+  ErrorStatus Delay_Init (void);
 
   /**
    * @desc    Delay ms function
@@ -57,6 +50,6 @@
    *
    * @return  void
    */
-  void DelayMs (uint32_t);
+  void Delay_Ms (uint32_t);
 
 #endif
