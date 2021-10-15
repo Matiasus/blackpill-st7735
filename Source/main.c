@@ -40,12 +40,29 @@ int main (void)
   ST7735_Init (SPI1);
 
   // clear screen
-  ST7735_ClearScreen (RED);
+  ST7735_ClearScreen (GREEN);
 
   for (uint8_t i = MAX_Y; i > 0; i--) {
     // draw line
-    ST7735_DrawLine (0, MAX_X, i, i, 0xff00);
+    ST7735_DrawLine (0, MAX_X, 0, i, RED);
   }
+
+  for (uint8_t i = MAX_Y; i > 0; i--) {
+    // draw line
+    ST7735_DrawLine (0, MAX_X, i, 0, BLUE);
+  }  
+  
+
+  // set position
+  ST7735_SetPosition (40, 10);
+  // draw char
+  //ST7735_DrawString ("st7735 <=> stm32f103c8t6", BLACK, X2);
+  // draw char
+  ST7735_DrawString ("ADRIANKO", BLACK, X3);
+  // set position
+  ST7735_SetPosition (55, 30);  
+  // draw char
+  ST7735_DrawString ("MIRKO", BLACK, X3);  
 
   // return
   // -------------------------------------------------------

@@ -36,7 +36,7 @@ vpath %.c $(DEVICE)
 vpath %.c $(TEMPLATEROOT)/Library
 
 #  Processor specific
-PTYPE = STM32F10X_MD_VL 
+PTYPE = STM32F10X_MD
 LDSCRIPT = $(TEMPLATEROOT)/stm32f100.ld
 STARTUP= startup_stm32f10x.o system_stm32f10x.o 
 

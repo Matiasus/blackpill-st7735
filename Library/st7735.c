@@ -601,6 +601,210 @@ void ST7735_DrawRectangle (uint8_t xs, uint8_t xe, uint8_t ys, uint8_t ye, uint1
 }
 
 /**
+ * @desc    Draw character
+ *
+ * @param   char character
+ * @param   uint16_t color
+ * @param   enum Size (X1, X2, X3)
+ *
+ * @return  uint8_t
+ */
+uint8_t ST7735_DrawChar (char character, uint16_t color, enum Size size)
+{
+  // variables
+  uint8_t letter, idxCol, idxRow;
+  // check if character is out of range
+  if ((character < 0x20) &&
+      (character > 0x7f)) { 
+    // out of range
+    return 0;
+  }
+  // last column of character array - 5 columns 
+  idxCol = CHARS_COLS_LEN;
+  // last row of character array - 8 rows / bits
+  idxRow = CHARS_ROWS_LEN;
+
+  // --------------------------------------
+  // SIZE X1 - normal font 1x high, 1x wide
+  // --------------------------------------
+  if (size == X1) {  
+    // loop through 5 bits
+    while (idxCol--) {
+      // read from ROM memory 
+      letter = FONTS[character - 32][idxCol];
+      // loop through 8 bits
+      while (idxRow--) {
+        // check if bit set
+        if (letter & (1 << idxRow)) {
+          // draw pixel 
+          ST7735_DrawPixel (cacheMemIndexCol + idxCol, cacheMemIndexRow + idxRow, color);
+        }
+      }
+      // fill index row again
+      idxRow = CHARS_ROWS_LEN;
+    }
+    // update x position
+    cacheMemIndexCol = cacheMemIndexCol + CHARS_COLS_LEN + 1;
+  
+  // --------------------------------------
+  // SIZE X2 - font 2x higher, normal wide
+  // --------------------------------------
+  } else if (size == X2) {
+    // loop through 5 bytes
+    while (idxCol--) {
+      // read from ROM memory 
+      letter = FONTS[character - 32][idxCol];
+      // loop through 8 bits
+      while (idxRow--) {
+        // check if bit set
+        if (letter & (1 << idxRow)) {
+          // draw first left up pixel; 
+          // (idxRow << 1) - 2x multiplied 
+          ST7735_DrawPixel (cacheMemIndexCol + idxCol, cacheMemIndexRow + (idxRow << 1), color);
+          // draw second left down pixel
+          ST7735_DrawPixel (cacheMemIndexCol + idxCol, cacheMemIndexRow + (idxRow << 1) + 1, color);
+        }
+      }
+      // fill index row again
+      idxRow = CHARS_ROWS_LEN;
+    }
+    // update x position
+    cacheMemIndexCol = cacheMemIndexCol + CHARS_COLS_LEN + 1;
+
+  // --------------------------------------
+  // SIZE X3 - font 2x higher, 2x wider
+  // --------------------------------------
+  } else if (size == X3) {
+    // loop through 5 bytes
+    while (idxCol--) {
+      // read from ROM memory 
+      letter = FONTS[character - 32][idxCol];
+      // loop through 8 bits
+      while (idxRow--) {
+        // check if bit set
+        if (letter & (1 << idxRow)) {
+          // draw first left up pixel; 
+          // (idxRow << 1) - 2x multiplied 
+          ST7735_DrawPixel (cacheMemIndexCol + (idxCol << 1), cacheMemIndexRow + (idxRow << 1), color);
+          // draw second left down pixel
+          ST7735_DrawPixel (cacheMemIndexCol + (idxCol << 1), cacheMemIndexRow + (idxRow << 1) + 1, color);
+          // draw third right up pixel
+          ST7735_DrawPixel (cacheMemIndexCol + (idxCol << 1) + 1, cacheMemIndexRow + (idxRow << 1), color);
+          // draw fourth right down pixel
+          ST7735_DrawPixel (cacheMemIndexCol + (idxCol << 1) + 1, cacheMemIndexRow + (idxRow << 1) + 1, color);
+        }
+      }
+      // fill index row again
+      idxRow = CHARS_ROWS_LEN;
+    }
+
+    // update x position
+    cacheMemIndexCol = cacheMemIndexCol + CHARS_COLS_LEN + CHARS_COLS_LEN + 1;
+  }
+
+  // return exit
+  return ST7735_SUCCESS;
+}
+
+/**
+ * @desc    Set text position x, y
+ *
+ * @param   uint8_t x - position
+ * @param   uint8_t y - position
+ *
+ * @return  uint8_t
+ */
+uint8_t ST7735_SetPosition (uint8_t x, uint8_t y)
+{
+  // check if coordinates is out of range
+  if ((x > MAX_X) && (y > MAX_Y)) {
+    // error
+    return ST7735_ERROR;
+
+  } else if ((x > MAX_X) && (y <= MAX_Y)) {
+    // set position y
+    cacheMemIndexRow = y;
+    // set position x
+    cacheMemIndexCol = 2;
+  } else {
+    // set position y 
+    cacheMemIndexRow = y;
+    // set position x
+    cacheMemIndexCol = x;
+  }
+  // success
+  return ST7735_SUCCESS;
+}
+
+/**
+ * @desc    Check text position x, y
+ *
+ * @param   uint8_t x - position
+ * @param   uint8_t y - position
+ * @param   uint8_t
+ *
+ * @return  uint8_t
+ */
+uint8_t ST7735_CheckPosition (uint8_t x, uint8_t y, uint8_t max_y, enum Size size)
+{
+  // check if coordinates is out of range
+  if ((x > MAX_X) && (y > max_y)) {
+    // out of range
+    return ST7735_ERROR;
+
+  }
+  // if next line
+  if ((x > MAX_X) && (y <= max_y)) {
+    // set position y
+    cacheMemIndexRow = y;
+    // set position x
+    cacheMemIndexCol = 2;
+  } 
+
+  // success
+  return ST7735_SUCCESS;
+}
+
+/**
+ * @desc    Draw string
+ *
+ * @param   char * string 
+ * @param   uint16_t color
+ * @param   enum Size (X1, X2, X3)
+ *
+ * @return  void
+ */
+void ST7735_DrawString (char *str, uint16_t color, enum Size size)
+{
+  // variables
+  uint16_t i = 0;
+  uint8_t check;
+  uint8_t delta_y;
+  uint8_t max_y_pos;
+  uint8_t new_x_pos;
+  uint8_t new_y_pos;
+
+  // loop through character of string
+  while (str[i] != '\0') {
+    // max x position character
+    new_x_pos = cacheMemIndexCol + CHARS_COLS_LEN + (size & 0x0F);
+    // delta y
+    delta_y = CHARS_ROWS_LEN + (size >> 4);
+    // max y position character
+    new_y_pos = cacheMemIndexRow + delta_y;
+    // max y pos
+    max_y_pos = MAX_Y - delta_y;
+    // control if will be in range
+    check = ST7735_CheckPosition (new_x_pos, new_y_pos, max_y_pos, size);
+    // update position
+    if (ST7735_SUCCESS == check) {
+      // read characters and increment index
+      ST7735_DrawChar (str[i++], color, size);
+    }
+  }
+}
+
+/**
  * @desc    RAM Content Show
  *
  * @param   void

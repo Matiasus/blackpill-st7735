@@ -96,8 +96,11 @@
 
   // Colors
   // -----------------------------------
+  #define YELLOW                0xFFE0
   #define BLACK                 0x0000
   #define WHITE                 0xFFFF
+  #define GREEN                 0x07E0
+  #define BLUE                  0x00FF  
   #define RED                   0xF000
 
   // AREA definition
@@ -309,6 +312,49 @@
    * @return  void
    */
   void ST7735_DrawRectangle (uint8_t, uint8_t, uint8_t, uint8_t, uint16_t);
+  
+  /**
+   * @desc    Draw character
+   *
+   * @param   char character
+   * @param   uint16_t color
+   * @param   enum Size (X1, X2, X3)
+   *
+   * @return  uint8_t
+   */
+  uint8_t ST7735_DrawChar (char, uint16_t, enum Size);
+  
+  /**
+   * @desc    Set text position x, y
+   *
+   * @param   uint8_t x - position
+   * @param   uint8_t y - position
+   *
+   * @return  uint8_t
+   */
+  uint8_t ST7735_SetPosition (uint8_t, uint8_t);
+  
+  /**
+   * @desc    Check text position x, y
+   *
+   * @param   uint8_t x - position
+   * @param   uint8_t y - position
+   * @param   uint8_t
+   *
+   * @return  uint8_t
+   */
+  uint8_t ST7735_CheckPosition (uint8_t, uint8_t, uint8_t, enum Size);
+  
+  /**
+   * @desc    Draw string
+   *
+   * @param   char * string 
+   * @param   uint16_t color
+   * @param   enum Size (X1, X2, X3)
+   *
+   * @return  void
+   */
+  void ST7735_DrawString (char *, uint16_t, enum Size size);
 
   /**
    * @desc    RAM Content Show
