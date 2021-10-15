@@ -234,7 +234,7 @@ uint8_t SPI_SS_Low (GPIO_TypeDef *GPIOx, uint16_t pin)
 }
 
 /**
- * @desc    Send 8 bits
+ * @desc    Transmit / receive 8 bits
  *
  * @param   SPI_TypeDef *SPIx
  * @param   unit8_t
@@ -255,6 +255,41 @@ uint8_t SPI_TRX_8b (SPI_TypeDef *SPIx, uint8_t data)
   return SPIx->DR;
 }
 
+/**
+ * @desc    Transmit / receive 16 bits
+ *
+ * @param   SPI_TypeDef *SPIx
+ * @param   unit16_t
+ *
+ * @return  uint16_t
+ */
+uint16_t SPI_TRX_16b (SPI_TypeDef *SPIx, uint16_t data)
+{
+  uint16_t rxbuff = 0;
+  // fill SPI11 DATA REGISTER with data
+  // this clear TXE flag
+  SPIx->DR = (uint8_t) (data >> 8);
+  // when data loaded parallel into shift register  
+  // TXE flag is set and next data should be loaded 
+  while (!(SPIx->SR & SPI_SR_TXE));
+  // fill SPI11 DATA REGISTER with data
+  // this clear TXE flag
+  SPIx->DR = (uint8_t) data; 
+  // wait till data is received
+  while (!(SPIx->SR & SPI_SR_RXNE));
+  // receive
+  rxbuff = SPIx->DR;
+  // when data loaded parallel into shift register  
+  // TXE flag is set and next data should be loaded 
+  while (!(SPIx->SR & SPI_SR_TXE));
+  // wait till data is received
+  while (!(SPIx->SR & SPI_SR_RXNE));
+  // receive
+  rxbuff |= (SPIx->DR << 8);
+
+  // return data
+  return rxbuff;
+}
 /**
  * @desc    Stop SPI
  *
