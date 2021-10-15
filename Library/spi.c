@@ -264,7 +264,6 @@ uint8_t SPI_TRX_8b (SPI_TypeDef *SPIx, uint8_t data)
  */
 void SPI_Disable (SPI_TypeDef *SPIx)
 {
-
   // wait till ready to load next data
   while (!(SPIx->SR & SPI_SR_TXE));
   // check BUSY flag
