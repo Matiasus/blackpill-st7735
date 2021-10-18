@@ -2,7 +2,7 @@
 Neccessary hardware
 - Development board - Blackpill (stm32f103c8t6)
 - Debugger/programmer ST-Link v2
-- 3.3V to 5V converter module (6 pins)
+- 3.3V to 5V converter module (6 pins) or LCD support 3.3V tolerant
 - 1.8 LCD with ST7735 driver
 - wires
 
