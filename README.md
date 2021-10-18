@@ -6,6 +6,13 @@ Neccessary hardware
 - 1.8 LCD with ST7735 driver
 - wires
 
+Neccessary software
+- [libusb](https://github.com/Matiasus/stm32f103c8t6#install-libusb) - userspace USB programming library development files
+- [stlink](https://github.com/Matiasus/stm32f103c8t6#install-stlink) - open source toolset to program and debug STM32 devices and boards
+- [GNU Arm Embedded Toolchain](https://github.com/Matiasus/stm32f103c8t6#install-gnu-toolchain) - is a ready-to-use, open-source suite of tools for C, C++ and assembly programming
+- [STM32-Template](https://github.com/geoffreymbrown/STM32-Template) - according to Geoffrey Brown stm32 template
+- [Standard Periheral Library](https://www.st.com/content/st_com/en/products/embedded-software/mcu-mpu-embedded-software/stm32-embedded-software/stm32-standard-peripheral-libraries/stsw-stm32054.html) - the Library includes a complete register address mapping with all bits, bitfields and registers declared in C a collection of routines and data structures covering all peripheral functions (drivers with common API)
+
 Library version 1.0 
 - communication through SPI1 (without remapping pins)
 - software type of slave select management
@@ -51,6 +58,7 @@ The GPIO pins configuration is according to [RM0008 Reference manual](https://ww
 - [Learn, build, and share](https://learnbuildshare.wordpress.com/about/stm32/using-spi-as-master/)
 - [Adafuit TFT](https://github.com/adafruit/Adafruit-ST7735-Library)
 - [AVR TFT](http://w8bh.net/avr/AvrTFT.pdf)
+- [Geoffreymbrown](https://github.com/geoffreymbrown)
 
 ## Links
 - [RM0008 Reference manual](https://www.st.com/resource/en/reference_manual/cd00171190-stm32f101xx-stm32f102xx-stm32f103xx-stm32f105xx-and-stm32f107xx-advanced-arm-based-32-bit-mcus-stmicroelectronics.pdf)
