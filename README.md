@@ -41,6 +41,10 @@ The GPIO pins configuration is according to [RM0008 Reference manual](https://ww
 - [*uint8_t **ST7735_DrawLine** (uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2, uint16_t color)*]() - draw line
 - [*uint8_t **ST7735_DrawChar** (char character, uint16_t color, enum Size)*]() - draw character
 
+  
+## Demonstration
+<img src="img/st7735.jpg" />
+
 ## Acknowledgement
 - [Erwin Ouyang](http://www.handsonembedded.com/stm32f103-spl-tutorial-5/)
 - [Manu NALEPA](https://github.com/nalepae/stm32_tutorial/blob/master/src/spi.c)
