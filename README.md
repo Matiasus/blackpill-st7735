@@ -43,7 +43,7 @@ The GPIO pins configuration is according to [RM0008 Reference manual](https://ww
 
   
 ## Demonstration
-<img src="img/st7735.jpg" />
+<img src="Img/st7735.jpg" />
 
 ## Acknowledgement
 - [Erwin Ouyang](http://www.handsonembedded.com/stm32f103-spl-tutorial-5/)
