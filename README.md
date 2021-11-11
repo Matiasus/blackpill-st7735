@@ -54,7 +54,7 @@ The GPIO pins configuration is according to [RM0008 Reference manual](https://ww
 ```c
 void ST7735_Init (SPI_TypeDef * SPIx)
 ```
-Initialisation function which initialise SPI1 clock, pins, load essential commands and parameters.
+Initialisation process which initialize SPI1 clock, pins, load essential commands and parameters.
 
 ### ST7735_ClearScreen
 ```c
