@@ -2,20 +2,27 @@
 Neccessary hardware
 - Development board - Blackpill (stm32f103c8t6)
 - Debugger/programmer ST-Link v2
-- 3.3V to 5V converter module (6 pins)
+- 3.3V to 5V converter module (6 pins) or LCD support 3.3V tolerant
 - 1.8 LCD with ST7735 driver
 - wires
 
-Library version 1.0 
-- communication through SPI1 (without remapping pins)
-- software type of slave select management
-- working with only one display
+Neccessary software
+- [libusb](https://github.com/Matiasus/stm32f103c8t6#install-libusb) - userspace USB programming library development files
+- [stlink](https://github.com/Matiasus/stm32f103c8t6#install-stlink) - open source toolset to program and debug STM32 devices and boards
+- [GNU Arm Embedded Toolchain](https://github.com/Matiasus/stm32f103c8t6#install-gnu-toolchain) - is a ready-to-use, open-source suite of tools for C, C++ and assembly programming
+- [STM32-Template](https://github.com/geoffreymbrown/STM32-Template) - according to Geoffrey Brown stm32 template
+- [Standard Periheral Library](https://www.st.com/content/st_com/en/products/embedded-software/mcu-mpu-embedded-software/stm32-embedded-software/stm32-standard-peripheral-libraries/stsw-stm32054.html) - the Library includes a complete register address mapping with all bits, bitfields and registers declared in C a collection of routines and data structures covering all peripheral functions (drivers with common API)
 
 ## ST7735 Library
 Example of SPI1 communication with peripheral LCD display. Detailed information how to drive SPI on microcontroller STM32f103C8T6 is described in [RM0008 Reference manual](https://www.st.com/resource/en/reference_manual/cd00171190-stm32f101xx-stm32f102xx-stm32f103xx-stm32f105xx-and-stm32f107xx-advanced-arm-based-32-bit-mcus-stmicroelectronics.pdf) and information about how to drive LCD with ST7735 driver is described in [ST7735 Manual](http://www.displayfuture.com/Display/datasheet/controller/ST7735.pdf).
 
 ## Library
 C library is aimed for driving ST7735 1.8 TFT LCD display 162x132 through SPI1's STM32f103C8T6 in master mode. Library uses SPI1 without remapping pins and software type of slave select management PINA4.
+
+Version 1.0 
+- communication through SPI1 (without remapping pins)
+- software type of slave select management
+- working with only one display
 
 ### Usage
 Prior defined for microcontroller STM32f103C8T6 (Blackpill, Bluepill). 
@@ -43,7 +50,13 @@ The GPIO pins configuration is according to [RM0008 Reference manual](https://ww
 - [*uint8_t **ST7735_DrawLine** (uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2, uint16_t color)*]() - draw line
 - [*void **ST7735_DrawRectangle** (uint8_t x0, uint8_t x1, uint8_t y0, uint8_t y1, uint16_t color)*]() - draw rectangle
 
+  
+## Demonstration
+<img src="Img/st7735.jpg" />
+>>>>>>> 16b93accb72049dbaf73e45a947fb3663bb131ec
+
 ## Acknowledgement
+- [Geoffreymbrown](https://github.com/geoffreymbrown)
 - [Erwin Ouyang](http://www.handsonembedded.com/stm32f103-spl-tutorial-5/)
 - [Manu NALEPA](https://github.com/nalepae/stm32_tutorial/blob/master/src/spi.c)
 - [Learn, build, and share](https://learnbuildshare.wordpress.com/about/stm32/using-spi-as-master/)
