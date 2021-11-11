@@ -42,15 +42,54 @@ The GPIO pins configuration is according to [RM0008 Reference manual](https://ww
 | MISO | PA6 | Full duplex / master => Input floating / Input pull-up |
 | MOSI | PA7 | Full duplex / master => Alternate function push-pull |
 
-### Functions
-- [void **ST7735_Init** (**SPI_TypeDef * **)]() - initialise SPI1 clock, pins, load essential commands and parameters
-- [void **ST7735_ClearScreen** (uint16_t **color**)]() - clear screen with specific color
-- [uint8_t **ST7735_DrawChar** (char **character**, uint16_t **color**, enum Size **size**)]() - draw character
-- [void **ST7735_DrawString** (char * **string**, uint16_t **color**, enum Size **size**)]() - draw string
-- [void **ST7735_DrawLine** (uint8_t **x1**, uint8_t **x2**, uint8_t **y1**, uint8_t **y2**, uint16_t **color**)]() - draw line
-- [void **ST7735_DrawRectangle** (uint8_t **x0**, uint8_t **x1**, uint8_t **y0**, uint8_t **y1**, uint16_t **color**)]() - draw rectangle
+## Functions
+- [void **ST7735_Init** (SPI_TypeDef * **SPIx**)](#ST7735_Init)
+- [void **ST7735_ClearScreen** (uint16_t **color**)](#ST7735_ClearScreen)
+- [uint8_t **ST7735_DrawChar** (char **character**, uint16_t **color**, enum Size **size**)](#ST7735_DrawChar)
+- [void **ST7735_DrawString** (char * **string**, uint16_t **color**, enum Size **size**)](#ST7735_DrawString)
+- [void **ST7735_DrawLine** (uint8_t **x0**, uint8_t **x**, uint8_t **y0**, uint8_t **y1**, uint16_t **color**)](#ST7735_DrawLine)
+- [void **ST7735_DrawRectangle** (uint8_t **x0**, uint8_t **x1**, uint8_t **y0**, uint8_t **y1**, uint16_t **color**)](#ST7735_DrawRectangle)
 
-  
+### ST7735_Init
+```c
+void ST7735_Init (SPI_TypeDef * SPIx)
+```
+Initialisation function which initialise SPI1 clock, pins, load essential commands and parameters.
+
+### ST7735_ClearScreen
+```c
+void ST7735_ClearScreen (uint16_t color)
+```
+Display clear with defined color and set cursor to position 0, 0.
+
+### ST7735_DrawChar
+```c
+void ST7735_DrawChar (char character, uint16_t color, enum Size size)
+```
+Draw character on screen with defined color and specific size. Possible sizes are:
+
+- X1 - basic size 5x8 pixels, 
+- X2 - higher size 5x16 pixels, 
+- X3 - higher and wider size 10x16 pixels.
+
+### ST7735_DrawString
+```c
+void ST7735_DrawString (char * string, uint16_t color, enum Size size)
+```
+Draw string on screen with defined color and specific size. It uses function *ST7735_CheckPosition* which check whether the entire text fits at the end of screen. If no, the character is depicted on the new line (row).
+
+### ST7735_DrawLine
+```c
+void ST7735_DrawLine (uint8_t x0, uint8_t x1, uint8_t y0, uint8_t y1, uint16_t color)
+```
+Draw horizontal, vertical line or sloping line with defined color. Important note - **Function does not check max coordinates**.
+
+### ST7735_DrawRectangle
+```c
+void ST7735_DrawRectangle (uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2, uint16_t color)
+```
+Draw rectangle with defined color. Important note - **Function does not check max coordinates**.
+
 ## Demonstration
 <img src="Img/st7735.jpg" />
 
