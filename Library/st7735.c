@@ -420,9 +420,9 @@ void ST7735_ClearScreen (uint16_t color)
  * @param   uint8_t y end position   / 0 <= rows <= MAX_Y-1
  * @param   uint16_t color
  *
- * @return  char
+ * @return  uint8_t
  */
-char ST7735_DrawLine (uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2, uint16_t color)
+uint8_t ST7735_DrawLine (uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2, uint16_t color)
 {
   // determinant
   int16_t D;

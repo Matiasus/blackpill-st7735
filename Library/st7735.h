@@ -279,9 +279,9 @@
    * @param   uint8_t y end position   / 0 <= rows <= MAX_Y-1
    * @param   uint16_t color
    *
-   * @return  char
+   * @return  uint8_t
    */
-  char ST7735_DrawLine (uint8_t, uint8_t, uint8_t, uint8_t, uint16_t);
+  uint8_t ST7735_DrawLine (uint8_t, uint8_t, uint8_t, uint8_t, uint16_t);
 
   /**
    * @desc    Fast draw line horizontal
