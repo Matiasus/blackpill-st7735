@@ -420,9 +420,9 @@ void ST7735_ClearScreen (uint16_t color)
  * @param   uint8_t y end position   / 0 <= rows <= MAX_Y-1
  * @param   uint16_t color
  *
- * @return  uint8_t
+ * @return  void
  */
-uint8_t ST7735_DrawLine (uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2, uint16_t color)
+void ST7735_DrawLine (uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2, uint16_t color)
 {
   // determinant
   int16_t D;
@@ -497,8 +497,6 @@ uint8_t ST7735_DrawLine (uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2, uint16_
       ST7735_DrawPixel (x1, y1, color);
     }
   }
-  // success return
-  return ST7735_SUCCESS;
 }
 
 /**
@@ -612,7 +610,7 @@ uint8_t ST7735_DrawChar (char character, uint16_t color, enum Size size)
   if ((character < 0x20) &&
       (character > 0x7f)) { 
     // out of range
-    return 0;
+    return ST7735_ERROR;
   }
   // last column of character array - 5 columns 
   idxCol = CHARS_COLS_LEN;

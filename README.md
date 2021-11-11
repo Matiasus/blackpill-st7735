@@ -47,13 +47,12 @@ The GPIO pins configuration is according to [RM0008 Reference manual](https://ww
 - [void **ST7735_ClearScreen** (uint16_t **color**)]() - clear screen with specific color
 - [uint8_t **ST7735_DrawChar** (char **character**, uint16_t **color**, enum Size **size**)]() - draw character
 - [void **ST7735_DrawString** (char * **string**, uint16_t **color**, enum Size **size**)]() - draw string
-- [uint8_t **ST7735_DrawLine** (uint8_t **x1**, uint8_t **x2**, uint8_t **y1**, uint8_t **y2**, uint16_t **color**)]() - draw line
+- [void **ST7735_DrawLine** (uint8_t **x1**, uint8_t **x2**, uint8_t **y1**, uint8_t **y2**, uint16_t **color**)]() - draw line
 - [void **ST7735_DrawRectangle** (uint8_t **x0**, uint8_t **x1**, uint8_t **y0**, uint8_t **y1**, uint16_t **color**)]() - draw rectangle
 
   
 ## Demonstration
 <img src="Img/st7735.jpg" />
->>>>>>> 16b93accb72049dbaf73e45a947fb3663bb131ec
 
 ## Acknowledgement
 - [Geoffreymbrown](https://github.com/geoffreymbrown)

@@ -281,7 +281,7 @@
    *
    * @return  uint8_t
    */
-  uint8_t ST7735_DrawLine (uint8_t, uint8_t, uint8_t, uint8_t, uint16_t);
+  void ST7735_DrawLine (uint8_t, uint8_t, uint8_t, uint8_t, uint16_t);
 
   /**
    * @desc    Fast draw line horizontal
