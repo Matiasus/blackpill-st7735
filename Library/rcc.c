@@ -1,26 +1,26 @@
 /** 
- * ---------------------------------------------------------------+ 
- * @desc        RCC
- * ---------------------------------------------------------------+ 
+ * --------------------------------------------------------------------------------------------+
+ * @desc        RCC Library for Blackpill (stm32f103c8t6)
+ * --------------------------------------------------------------------------------------------+
  *              Copyright (C) 2021 Marian Hrinko.
  *              Written by Marian Hrinko (mato.hrinko@gmail.com)
  *
  * @author      Marian Hrinko
  * @datum       21.04.2021
  * @file        rcc.c
- * @update      -
+ * @update      11.11.2021
  * @version     1.0
  * @tested      stm32f103c8t6
  *
- * @depend      
- * ---------------------------------------------------------------+
- * @interface   
- * @pins         
- *
+ * @depend      rcc.h     
+ * --------------------------------------------------------------------------------------------+
+ * @descr       Select clock source - HSE (8MHz), PLL (72MHz)
+ * @note        
+ * --------------------------------------------------------------------------------------------+
+ * @inspir      Standard Peripheral Library 
  */
 
 // libraries
-#include <stm32f10x.h>
 #include "rcc.h"
 
 /**
@@ -70,7 +70,6 @@ uint32_t SetSysClk_HSE_8MHz (void)
   CLEAR_BIT (RCC->CR, RCC_CR_HSEBYP);
   // set HSE ON
   SET_BIT (RCC->CR, RCC_CR_HSEON);
-
 
   // wait till startup timer count or HSE is ready
   do {
@@ -145,7 +144,6 @@ uint32_t SetSysClk_PLL_72MHz (void)
   CLEAR_BIT (RCC->CR, RCC_CR_HSEBYP);
   // set HSE ON
   SET_BIT (RCC->CR, RCC_CR_HSEON);
-
 
   // wait till startup timer count or HSE is ready
   do {
@@ -222,15 +220,4 @@ void RCC_CFGR_Config (uint32_t mask, uint32_t value)
   SET_BIT (temp, value);
   // write into register
   WRITE_REG (RCC->CFGR, temp);
-}
-
-/**
- * @desc    RCC init HSI
- *
- * @param   void
- *
- * @return  void
- */
-void RCC_Init_HSI (void)
-{
 }
