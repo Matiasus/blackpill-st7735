@@ -87,34 +87,27 @@ uint32_t SetSysClk_HSE_8MHz (void)
     // error, HSE not ready
     return ERROR;
   }
-
   // PREFETCH BUFFER
   // ----------------------------------------------------------------------
   // disable prefetch buffer
   CLEAR_BIT (FLASH->ACR, FLASH_ACR_PRFTBE);
   // enable prefetch buffer
   SET_BIT (FLASH->ACR, FLASH_ACR_PRFTBE);
-
   // LATENCY
   // ----------------------------------------------------------------------
   RCC_CFGR_Config (FLASH_ACR_LATENCY, FLASH_ACR_LATENCY_0);
-
   // AHB / 1 Clock
   // ----------------------------------------------------------------------
   RCC_CFGR_Config (RCC_CFGR_HPRE, RCC_CFGR_HPRE_DIV1);
-
   // APB1 / 1 Clock
   // ----------------------------------------------------------------------
   RCC_CFGR_Config (RCC_CFGR_PPRE1, RCC_CFGR_PPRE1_DIV1);
-
   // APB2 / 1 Clock
   // ----------------------------------------------------------------------
   RCC_CFGR_Config (RCC_CFGR_PPRE2, RCC_CFGR_PPRE2_DIV1);
-
   // SYSCLK Clock
   // ----------------------------------------------------------------------
   RCC_CFGR_Config (RCC_CFGR_SW, RCC_CFGR_SW_HSE);
-
   // check if HSE is selected as SYSCLK 
   while (!READ_BIT(RCC->CFGR, RCC_CFGR_SWS_HSE));
 
@@ -168,37 +161,29 @@ uint32_t SetSysClk_PLL_72MHz (void)
   CLEAR_BIT (FLASH->ACR, FLASH_ACR_PRFTBE);
   // enable prefetch buffer
   SET_BIT (FLASH->ACR, FLASH_ACR_PRFTBE);
-
   // LATENCY
   // ----------------------------------------------------------------------
   RCC_CFGR_Config (FLASH_ACR_LATENCY, FLASH_ACR_LATENCY_2);
-
   // AHB Clock / 1 = 72MHz
   // ----------------------------------------------------------------------
   RCC_CFGR_Config (RCC_CFGR_HPRE, RCC_CFGR_HPRE_DIV1);
-
   // APB1 Clock / 2 = 36MHz
   // ----------------------------------------------------------------------
   RCC_CFGR_Config (RCC_CFGR_PPRE1, RCC_CFGR_PPRE1_DIV2);
-
   // APB2 Clock / 1 = 72MHz
   // ----------------------------------------------------------------------
   RCC_CFGR_Config (RCC_CFGR_PPRE2, RCC_CFGR_PPRE2_DIV1);
-
   // SYSCLK Clock
   // ----------------------------------------------------------------------
   RCC_CFGR_Config (RCC_CFGR_SW, RCC_CFGR_SW_PLL);
-
   // PLL Source HSE not divided & Multiplication factor = 9
   RCC_CFGR_Config ((RCC_CFGR_PLLMULL | RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE), (RCC_CFGR_PLLSRC_HSE | RCC_CFGR_PLLXTPRE_HSE | RCC_CFGR_PLLMULL9));
-
   // enable PLL
   SET_BIT (RCC->CR, RCC_CR_PLLON);
-
   // check if PLL is selected as SYSCLK 
   while (!READ_BIT(RCC->CFGR, RCC_CFGR_SWS_PLL));
 
-  // succes, HSE ready
+  // succes, PLL ready
   return SUCCESS;
 }
 
